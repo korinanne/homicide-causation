@@ -231,7 +231,7 @@
         <button type="button" class="arcade-btn magenta" onclick="openTeacher()">🔑 TEACHER MODE</button>
       </div>
       <p class="center blink" style="font-size:10px; color:var(--yellow); margin-top:18px;">PRESS INSERT COIN</p>
-      <p class="footer-note">Content drawn only from the Causation &amp; Homicide slides (Prof. Wattley) and the Themis Criminal Law outline.</p>
+      <p class="footer-note">Content drawn only from the BarBri Criminal Law outline (Homicide).</p>
     </section>
 
     <!-- BRIEFING -->
@@ -239,7 +239,7 @@
       <h2>CASE BRIEFING</h2>
       <div class="panel">
         <h3>HOW THE GAME WORKS</h3>
-        <p class="body-text">The game has two halves of equal size. <b>Levels 1 to 3 cover homicide</b>: the forms of malice and the felony-murder rule, heat-of-passion mitigation, and grading. <b>Levels 4 to 6 cover causation</b>: actual cause, intervening causes, and a proximate-cause boss fight.</p>
+        <p class="body-text">The game has two halves of equal size. <b>Levels 1 to 3 cover homicide</b>: malice aforethought and the felony-murder rule, voluntary manslaughter, and classifying homicides by degree. <b>Levels 4 to 6 cover causation</b>: cause-in-fact, intervening acts, and a proximate-cause boss fight.</p>
         <ul>
           <li><b>Levels 1, 2, 5 and the Boss</b> are shooters: answer targets descend toward your ship, and you shoot the right one before they land.</li>
           <li><b>Level 3</b> is a ladder climb: climb to the right homicide grade and lock it in.</li>
@@ -267,21 +267,27 @@
       <h2>LEVEL 1: MALICE INVADERS</h2>
       <div class="panel">
         <h3>THE MISSION</h3>
-        <p class="body-text">Common-law murder is an unlawful killing of another human being with <b>malice aforethought</b>. Five invaders descend in formation, one for each answer. Shoot the one that names the form of malice the facts show. If there's no malice at all, shoot E. A few cases test the <b>felony-murder rule</b> itself and carry their own targets.</p>
+        <p class="body-text">Murder is the unlawful killing of another <b>human being</b> with <b>malice aforethought</b>. Five invaders descend in formation, one for each answer. Shoot the one that names the state of mind the facts show. If there's no malice at all, shoot E. Some cases test the <b>felony-murder rule</b> itself and carry their own targets.</p>
         <div class="controls-box">
-          <p><b>CONTROLS:</b> Same as Level 2. <kbd>←</kbd>/<kbd>→</kbd> + <kbd>Space</kbd>, click a target, or press its letter.</p>
+          <p><b>CONTROLS:</b> <kbd>←</kbd> / <kbd>→</kbd> move your ship, <kbd>Space</kbd> fires. With a mouse, click a target and your ship flies under it and fires. Shortcut: press the target's letter (<kbd>A</kbd>, <kbd>B</kbd>...) to auto-aim and fire.</p>
         </div>
         <h3>READ THE TARGETS FIRST</h3>
         <ol class="preview-list" type="A">
-          <li><b>Intent to kill.</b> An inference of intent to kill may be made if a deadly weapon was used intentionally.</li>
-          <li><b>Serious bodily harm.</b> The defendant intended serious bodily injury, not death, and the victim died.</li>
-          <li><b>Depraved heart.</b> An unintentional killing from reckless indifference to an unjustifiably high risk to human life.</li>
-          <li><b>Felony murder.</b> An unintended killing during an inherently dangerous felony (BARRK).</li>
-          <li><b>Below malice.</b> An unintentional killing that is negligent or careless, not murder.</li>
+          <li><b>Intent to kill.</b> Express malice.</li>
+          <li><b>Intent to inflict great bodily injury.</b> Implied malice.</li>
+          <li><b>Abandoned and malignant heart.</b> Reckless indifference to an unjustifiably high risk to human life. Implied malice.</li>
+          <li><b>Felony murder.</b> Intent to commit a felony. Implied malice.</li>
+          <li><b>No malice.</b> None of the four states of mind is present.</li>
         </ol>
-        <div class="term-box red">
-          <h4>FELONY-MURDER RULE BASICS</h4>
-          <p>The felony must be inherently dangerous (BARRK: burglary, arson, rape, robbery, kidnapping) and independent of the killing. Under merger, an assault resulting in death is not felony murder, and aggravated battery can't be the predicate. The slides note the controversy: it imposes murder punishment without intent to kill, and it's defended as discouraging felony conduct.</p>
+        <div class="grid-2">
+          <div class="term-box">
+            <h4>DEADLY WEAPON RULE</h4>
+            <p>Intentional use of a deadly weapon authorizes a permissive inference of intent to kill. A deadly weapon is any instrument (or, in some limited circumstances, any part of the body) used in a manner calculated or likely to produce death or serious bodily injury.</p>
+          </div>
+          <div class="term-box red">
+            <h4>FELONY-MURDER LIMITS</h4>
+            <p>The prosecution must prove the underlying felony was committed or attempted. The felony must be independent of the killing. Under the majority rule, death must have been a foreseeable result of the felony.</p>
+          </div>
         </div>
       </div>
       <div class="center"><button type="button" class="arcade-btn green" onclick="beginLevel(1)">▶ I'VE READ THIS: BEGIN <span class="gate-secs" data-level="1"></span></button></div>
@@ -290,33 +296,36 @@
       <h2>LEVEL 2: HEAT SEEKERS</h2>
       <div class="panel">
         <h3>THE MISSION</h3>
-        <p class="body-text">The slides distinguish two manslaughters: recklessly causing death, which the prosecutor charges, and <b>heat of passion</b>, a mitigation of murder that the defendant raises. Here you play defense counsel. For each killing, shoot <b>MITIGATED</b> if heat of passion works. If it fails, shoot the element that fails.</p>
+        <p class="body-text">Voluntary manslaughter is a killing that would otherwise be murder but is distinguishable by <b>adequate provocation</b>, i.e., a killing in the heat of passion. Here you play defense counsel. Shoot <b>MITIGATED</b> if all four common-law tests are met. If not, shoot the test that fails.</p>
+        <div class="controls-box">
+          <p><b>CONTROLS:</b> Same as Level 1. <kbd>←</kbd>/<kbd>→</kbd> + <kbd>Space</kbd>, click a target, or press its letter.</p>
+        </div>
         <div class="grid-2">
           <div class="term-box">
-            <h4>PROVOCATION</h4>
-            <p>The defendant was actually provoked by the victim, and a reasonable person would have been provoked. A serious battery, a threat of deadly force, or discovering a spouse's adultery qualifies. Words alone cannot be provocation (People v. Pouncey), though the slides ask about "informational words."</p>
+            <h4>THE FOUR TESTS</h4>
+            <p>(a) The provocation would arouse sudden and intense passion in an ordinary person, causing loss of self-control. (b) D was in fact provoked. (c) There was not sufficient time for a reasonable person's passions to cool. (d) D in fact did not cool off.</p>
           </div>
           <div class="term-box">
-            <h4>NO COOLING-DOWN PERIOD</h4>
-            <p>The defendant did not have enough time to cool down, and a reasonable person would not have cooled down.</p>
+            <h4>WHEN PROVOCATION IS ADEQUATE</h4>
+            <p>Most frequently recognized: being subjected to a serious battery or a threat of deadly force, and discovering one's spouse in bed with another person.</p>
           </div>
-          <div class="term-box">
-            <h4>LOSS OF SELF-CONTROL</h4>
-            <p>The defendant actually lost control, and a reasonable person would have. The provocation must cause the killing: no mitigation when the intent to kill was formed before the provocation.</p>
+          <div class="term-box red">
+            <h4>MERE WORDS</h4>
+            <p>At common law, "mere words" were inadequate as a matter of law. Modern courts are more likely to let the jury decide whether mere words or similar matters are adequate provocation.</p>
           </div>
           <div class="term-box yellow">
-            <h4>EXTREME EMOTIONAL DISTURBANCE</h4>
-            <p>State v. Elliott: broader than "heat of passion," with no cooling-down inquiry.</p>
+            <h4>IMPERFECT SELF-DEFENSE</h4>
+            <p>Some states reduce murder to manslaughter even when D was at fault in starting the altercation, or unreasonably but honestly believed deadly force was necessary.</p>
           </div>
         </div>
         <h3>READ THE TARGETS FIRST</h3>
         <ol class="preview-list" type="A">
-          <li>MITIGATED: every element is met, so it's voluntary manslaughter.</li>
-          <li>NO PROVOCATION: no adequate provocation.</li>
-          <li>COOLED OFF: enough time passed for a reasonable person to cool off.</li>
-          <li>NOT IN PASSION: the defendant wasn't actually inflamed, or formed the intent to kill first.</li>
+          <li>MITIGATED: all four tests met, so voluntary manslaughter.</li>
+          <li>INADEQUATE PROVOCATION: wouldn't arouse sudden, intense passion in an ordinary person (test a).</li>
+          <li>TIME TO COOL: enough time passed for a reasonable person to cool (test c).</li>
+          <li>NOT IN FACT: D wasn't in fact provoked, or in fact cooled off (tests b and d).</li>
         </ol>
-        <p class="body-text small">One case uses the extreme-emotional-disturbance test and has its own targets.</p>
+        <p class="body-text small">The two imperfect self-defense cases have their own targets.</p>
       </div>
       <div class="center"><button type="button" class="arcade-btn green" onclick="beginLevel(2)">▶ I'VE READ THIS: BEGIN <span class="gate-secs" data-level="2"></span></button></div>
     </section>
@@ -324,17 +333,17 @@
       <h2>LEVEL 3: LADDER OF DEATH</h2>
       <div class="panel">
         <h3>THE MISSION</h3>
-        <p class="body-text">Your detective starts at the bottom of the homicide ladder. Climb to the <b>most appropriate charge</b> and lock it in before time runs out. Assume a statute defines first-degree murder as a willful, deliberate, and premeditated killing, or a killing during a BARRK felony.</p>
+        <p class="body-text">Your detective starts at the bottom of the homicide ladder. Climb to the <b>most appropriate classification</b> and lock it in before time runs out. Assume a statute that divides murder into degrees the way the outline describes.</p>
         <div class="controls-box">
           <p><b>CONTROLS:</b> <kbd>↑</kbd> / <kbd>↓</kbd> climb, <kbd>Space</kbd> or <kbd>Enter</kbd> locks in. With a mouse, click a rung to climb there and lock in.</p>
         </div>
         <div class="term-box">
-          <h4>TRADITIONAL GRADING (FROM THE SLIDES)</h4>
-          <p><b>First degree:</b> malice aforethought, premeditated, deliberate. Under the statute in State v. Thompson, premeditation means the intent or knowledge precedes the killing by any length of time to permit reflection, but not the instant effect of a sudden quarrel or heat of passion.</p>
-          <p><b>Second degree:</b> malice aforethought only, including depraved heart.</p>
-          <p><b>Voluntary manslaughter:</b> passion killing.</p>
-          <p><b>Involuntary manslaughter:</b> gross negligence (criminal negligence); under the MPC, recklessness. Also a killing during a malum in se misdemeanor.</p>
-          <p><b>Not criminal homicide:</b> no living human being was killed by the defendant.</p>
+          <h4>THE LADDER</h4>
+          <p><b>First degree:</b> all murders are second degree unless the prosecution proves a deliberate and premeditated killing ("deliberate" = decided in a cool and dispassionate manner; "premeditated" = actually reflected on the idea of killing, if only briefly), a killing during an enumerated felony, or a killing by lying in wait, poison, or torture.</p>
+          <p><b>Second degree:</b> any other murder, including a killing during a felony that isn't on the list, where a statute covers it.</p>
+          <p><b>Voluntary manslaughter:</b> a killing in the heat of passion after adequate provocation.</p>
+          <p><b>Involuntary manslaughter:</b> criminal negligence (MPC: recklessness), or an unlawful act, e.g., a malum in se misdemeanor, or a malum prohibitum one where death was foreseeable.</p>
+          <p><b>Not a criminal homicide:</b> no criminal liability for the death, e.g., a justifiable or excusable homicide, or no "human being" killed under the born-alive rule.</p>
         </div>
       </div>
       <div class="center"><button type="button" class="arcade-btn green" onclick="beginLevel(3)">▶ I'VE READ THIS: BEGIN <span class="gate-secs" data-level="3"></span></button></div>
@@ -344,26 +353,26 @@
       <h2>LEVEL 4: BUT-FOR BLASTER</h2>
       <div class="panel">
         <h3>THE MISSION</h3>
-        <p class="body-text">Fact cards drop from the sky. Slide the yellow paddle under the correct bin before the card lands. The only question is <b>actual cause</b> (cause-in-fact). Proximate cause comes in Level 5, so a card can be an actual cause even if it would fail the fairness test later. If the card lands with the paddle in the middle, it falls between the bins and counts as a miss.</p>
+        <p class="body-text">Now the causation half. Fact cards drop from the sky. Slide the yellow paddle under the correct bin before the card lands. The only question is <b>cause-in-fact</b>. Proximate cause comes in Level 5, so a card can be a cause-in-fact even if proximate cause would fail. If the card lands with the paddle in the middle, it falls between the bins and counts as a miss.</p>
         <div class="controls-box">
           <p><b>CONTROLS:</b> <kbd>←</kbd> / <kbd>→</kbd> move the paddle. <kbd>↓</kbd> or <kbd>Space</kbd> slams the card down now for a bigger speed bonus. With a mouse, click the left or right bin to move there and slam.</p>
         </div>
         <div class="grid-2">
           <div class="term-box">
             <h4>◀ LEFT BIN: ACTUAL CAUSE</h4>
-            <p>But for the defendant's act, the victim would not have died. Setting in motion the forces that kill counts, and so does an act that accelerates death.</p>
+            <p>The result would not have occurred "but for" the defendant's conduct.</p>
           </div>
           <div class="term-box red">
             <h4>RIGHT BIN ▶: NOT AN ACTUAL CAUSE</h4>
-            <p>The death would have happened the same way without the act, or an independent cause killed the victim before the defendant's act could.</p>
+            <p>The result would have occurred anyway, without the defendant's conduct.</p>
           </div>
           <div class="term-box yellow">
-            <h4>SUBSTANTIAL FACTOR</h4>
-            <p>With multiple causes, the defendant's act must be a substantial factor. Simultaneous independent acts can each be an actual cause even if the victim would have died from either one.</p>
+            <h4>HASTENING AND SIMULTANEOUS ACTS</h4>
+            <p>An act that hastens an inevitable result is still a cause of it. Simultaneous acts by two or more persons may each be independently sufficient causes of a single result.</p>
           </div>
           <div class="term-box yellow">
             <h4>PREEXISTING CONDITION</h4>
-            <p>A victim's preexisting condition that contributes to the death doesn't supplant the defendant's conduct as an actual cause.</p>
+            <p>A preexisting condition that makes the victim more susceptible to death doesn't break the chain; the defendant "takes the victim as he finds him."</p>
           </div>
         </div>
       </div>
@@ -388,23 +397,19 @@
       <h2>LEVEL 5: CHAIN GUN</h2>
       <div class="panel">
         <h3>THE MISSION</h3>
-        <p class="body-text">Every case has an <b>intervening cause</b>: an actual cause that occurs after the defendant's voluntary act. Each case is two waves of targets. In wave 1, shoot <b>DEPENDENT</b> or <b>INDEPENDENT</b>. In wave 2, shoot <b>CHAIN HOLDS</b> (D is the proximate cause) or <b>CHAIN BREAKS</b> (the intervening cause relieves D).</p>
+        <p class="body-text">Every case has an <b>intervening act</b> between the defendant's conduct and the death. Each case is two waves of targets. In wave 1, shoot the kind of intervening act: <b>ACT OF NATURE</b>, <b>ACT OF A THIRD PARTY</b>, or <b>ACT OF THE VICTIM</b>. In wave 2, shoot <b>CHAIN HOLDS</b> (D is still the proximate cause) or <b>CHAIN BREAKS</b> (the intervening act shields D).</p>
         <div class="controls-box">
-          <p><b>CONTROLS:</b> <kbd>←</kbd> / <kbd>→</kbd> move your ship, <kbd>Space</kbd> fires. With a mouse, click a target and your ship flies under it and fires. Shortcut: press the target's letter (<kbd>A</kbd>, <kbd>B</kbd>...) to auto-aim and fire.</p>
+          <p><b>CONTROLS:</b> Same as Level 1. <kbd>←</kbd>/<kbd>→</kbd> + <kbd>Space</kbd>, click a target, or press its letter.</p>
         </div>
         <div class="grid-2">
           <div class="term-box">
-            <h4>DEPENDENT INTERVENING CAUSE</h4>
-            <p>It arises as a result of the first cause and is responsive to the defendant's conduct, e.g., the victim's own reaction or treatment by a doctor. The defendant stays liable unless the response was "abnormal" (not just unforeseeable, but unusual or extraordinary in hindsight).</p>
+            <h4>THE GENERAL RULE</h4>
+            <p>An intervening act shields the defendant from liability if the act is a mere coincidence or is outside the foreseeable sphere of risk created by the defendant's act. The chain is broken only by a "superseding factor."</p>
           </div>
           <div class="term-box red">
-            <h4>INDEPENDENT INTERVENING CAUSE</h4>
-            <p>Not foreseeable and not intended, e.g., the conduct or gross negligence of a third party, or a force of nature outside the defendant's control. It relieves the defendant when it is independent and unforeseeable.</p>
+            <h4>THE OUTLINE'S EXAMPLES</h4>
+            <p>Act of nature: lightning striking the victim is a mere coincidence. Third party: negligent medical care is a foreseeable risk, but gross negligence or intentional mistreatment is not. Victim: refusing treatment or suicide from unbearable pain may be found foreseeable.</p>
           </div>
-        </div>
-        <div class="term-box yellow">
-          <h4>QUESTIONS TO ASK (FROM THE SLIDES)</h4>
-          <p>What was the nature of the intervening cause? Was it foreseeable? Who had control over it? How much harm did it contribute? Are there policy arguments, i.e., fairness and justice? Even with an intervening act, the defendant stays responsible unless that act was so out of the ordinary that holding the defendant responsible would be unjust.</p>
         </div>
       </div>
       <div class="center"><button type="button" class="arcade-btn green" onclick="beginLevel(5)">▶ I'VE READ THIS: BEGIN <span class="gate-secs" data-level="5"></span></button></div>
@@ -413,23 +418,23 @@
       <h2 style="color:var(--red); text-shadow:0 0 8px var(--red);">BOSS: THE LEGAL CAUSE MOTHERSHIP</h2>
       <div class="panel">
         <h3>THE MISSION</h3>
-        <p class="body-text">The Mothership hovers at the top of the screen, launching four answer targets at a time. Shoot the right one to knock down its shields. Nine correct hits destroy it. This round is all <b>proximate (legal) cause</b>, including how causation works in felony murder. Correct hits are worth more, and a miss still costs a life.</p>
+        <p class="body-text">The Mothership hovers at the top of the screen, launching four answer targets at a time. Shoot the right one to knock down its shields. Nine correct hits destroy it. This round covers the rules of <b>proximate cause</b>, including how causation works in felony murder. Correct hits are worth more, and a miss still costs a life.</p>
         <div class="grid-2">
           <div class="term-box red">
             <h4>PROXIMATE CAUSE</h4>
-            <p>The prosecution must prove both actual and proximate causation. A death is foreseeable if it is the natural and probable result of the defendant's conduct. Even with an intervening act, the defendant stays responsible unless that act was so out of the ordinary that holding the defendant responsible would be unjust.</p>
+            <p>Problems arise only when death occurs because of the defendant's acts but in a manner not intended or anticipated. A defendant is responsible for all "natural and probable" consequences of his conduct, even if he didn't anticipate the precise manner. Only a superseding factor breaks the chain.</p>
           </div>
           <div class="term-box red">
-            <h4>THE MPC VERSION</h4>
-            <p>When the injury is generally of the type the defendant intended, proximate cause exists if the injury is not too remote or accidental in its occurrence to have a just bearing on the actor's liability.</p>
+            <h4>YEAR AND A DAY</h4>
+            <p>At common law, the victim had to die within one year and one day of the injury, or there could be no homicide prosecution. Most states that have reviewed the rule have abolished it.</p>
           </div>
           <div class="term-box">
-            <h4>FELONY MURDER: WHO CAUSED THE DEATH?</h4>
-            <p>Majority rule: felon or agent. Minority rule: proximate cause. Under Redline, a felon generally isn't guilty of felony murder when a victim or officer kills a cofelon. The felony continues during flight; consider time, distance, and the causal relationship.</p>
+            <h4>AGENCY VS. PROXIMATE CAUSE</h4>
+            <p>Agency theory: the killing must be committed by the felon or his agent. Proximate-cause theory: felons are liable for innocent victims killed by someone other than a co-felon, since they set the events in motion.</p>
           </div>
           <div class="term-box">
-            <h4>LIMITS ON CAUSATION</h4>
-            <p>Common law: death has to occur within a year and a day of the injury. And providing a person the means to commit suicide generally doesn't make the provider guilty of murder, because suicide is not homicide.</p>
+            <h4>DEATH OF A CO-FELON</h4>
+            <p>The majority Redline view: liability for murder cannot be based on the death of a co-felon resulting from resistance by the victim or police pursuit.</p>
           </div>
         </div>
       </div>
@@ -647,139 +652,147 @@
   function fracRemaining(){ return T.total ? Math.max(0, 1 - T.elapsed/T.total) : 0; }
 
   // =========================================================
-  // CONTENT (only from the Causation & Homicide slides and the Themis outline)
+  // CONTENT (only from the BarBri Criminal Law outline: Homicide)
   // =========================================================
   var CATCH_DATA = [
-    {text:"D puts rat poison in V's coffee. V immediately becomes sick, is rushed to the hospital, and dies.", cat:'yes',
-     why:"The slide hypo with no intervening cause. Without the act there is no injury, so D is the but-for cause and no further analysis is needed."},
-    {text:"D stabs V repeatedly in bed, thinking V is asleep. V actually died of a massive heart attack an hour earlier.", cat:'no',
-     why:"The outline's example. An independent cause killed V before D's act could, so there is no homicide of V. D may be charged with attempted murder."},
-    {text:"D and E, acting independently, shoot V at the same moment. Either shot alone would have killed V.", cat:'yes',
-     why:"Each shot is considered an actual cause. With simultaneous independent acts, each can be an actual cause even though V would have died from either one (substantial factor)."},
-    {text:"D clubs V, intending to kill. The blow alone wouldn't have killed V, but V's heart condition makes it fatal.", cat:'yes',
-     why:"A victim's preexisting condition that contributes to the death doesn't supplant the defendant's conduct as the actual cause."},
-    {text:"D sets up a mechanical device in his barn. Later, while D is away, it goes off and kills a person.", cat:'yes',
-     why:"The outline's example: D set in motion the forces that led to the death, so D caused it."},
-    {text:"D shoots at V and misses entirely. Months later, V dies in an unrelated car accident.", cat:'no',
-     why:"V would have died in the accident whether or not D ever fired, so this is attempted murder but not homicide."},
-    {text:"D slips V a slow-acting poison. Before it can take effect, E, acting on his own, shoots V dead.", cat:'no',
-     why:"An independent cause (E's shot) killed V before D's act could. Like the heart-attack stabbing, D is liable for attempt, not homicide."},
-    {text:"V is terminally ill. D stabs V, and the wound kills V weeks earlier than the illness would have.", cat:'yes',
-     why:"Per the outline, an act that accelerates death is a legal cause of that death. It's an actual cause, too: without the stabbing, V wouldn't have died then."},
-    {text:"D lies to V about the forecast so V will go hiking. On the trail, a lightning strike kills V.", cat:'yes',
-     why:"This one's a trick: but for the lie, V wouldn't have been on the trail, so actual cause is met. Proximate cause is the real problem, since forces of nature outside D's control are generally not foreseeable. You'll see that in Level 5."},
-    {text:"D steals V's car. Three days later, V dies at home of a heart condition with no link to the theft.", cat:'no',
-     why:"Nothing ties the theft to the death. V would have died the same way without D's act."},
-    {text:"B shouts at a carriage driver, waving his hands wildly. The horse runs away, the carriage topples, and the tourist riding in it is killed.", cat:'yes',
-     why:"The Central Park slide hypo. But for B's outburst, the horse doesn't run. Whether B is also the legal cause is a separate, proximate-cause question."}
+    {text:"A, with malice aforethought, shoots B in the leg. B is a hemophiliac and bleeds to death before he can get medical attention. A person without hemophilia would have survived.", cat:'yes',
+     why:"The outline's example. A victim's preexisting condition doesn't break the chain of causation; the defendant “takes the victim as he finds him.” A is liable for murder."},
+    {text:"A switches off B's life support. B had only 24 hours to live and dies right away.", cat:'yes',
+     why:"The outline's example. An act that hastens an inevitable result is still a legal cause of that result, even if society might call it an “act of mercy.”"},
+    {text:"A and C, acting separately, each shoot V at the same moment. Either shot alone would have killed V.", cat:'yes',
+     why:"Simultaneous acts by two or more persons may be considered independently sufficient causes of a single result."},
+    {text:"A fires at V and misses. Months later, V dies of an illness that has nothing to do with A.", cat:'no',
+     why:"The result would have occurred anyway. Cause-in-fact asks whether the result would not have occurred “but for” the defendant's conduct, and here it would have."},
+    {text:"A poisons V's drink, but V never touches it. On the drive home, V dies in a crash that has no connection to A.", cat:'no',
+     why:"V would have died in the crash whether or not A poisoned the drink. A's conduct isn't the but-for cause of the death."},
+    {text:"A, intending to kill B, wounds him. B gets negligent care at the hospital and dies.", cat:'yes',
+     why:"But for the wound, B would not have been in the hospital at all, so A's act is a cause-in-fact. Whether the negligent care breaks proximate cause is a separate question (Level 5)."},
+    {text:"A drives negligently. To avoid A's swerving car, B takes an unfamiliar route home, where lightning strikes B's car and kills him.", cat:'yes',
+     why:"This one's a trick: but for A's driving, B wouldn't have been on that road, so cause-in-fact is met. The outline still says A can't be charged with manslaughter, because the lightning was a mere coincidence. That's a proximate-cause problem, and it comes back in Level 5."},
+    {text:"While A is across town burglarizing an empty house, V dies at home of a heart attack. V never knew about the burglary.", cat:'no',
+     why:"Nothing connects A's burglary to V's death. The death would have happened exactly the same way without A's conduct."},
+    {text:"A steals V's wallet. A week later, V dies of a long-standing illness unrelated to the theft.", cat:'no',
+     why:"The theft played no part in the death, so the but-for test fails."},
+    {text:"A, intending to kill B, wounds him. For religious reasons, B refuses medical treatment that modern medicine says would have saved him, and he dies.", cat:'yes',
+     why:"But for the wound, B wouldn't have needed treatment. The outline adds that most jurisdictions also find A liable, because A's act directly created the risk of death and the refusal may be found foreseeable."},
+    {text:"A intentionally sets fire to a dwelling. B, a firefighter, dies trying to put out the blaze.", cat:'yes',
+     why:"But for the fire, the firefighter wouldn't have died. The outline also treats this death as foreseeable for felony murder."}
   ];
 
-  var DEP_OPTS = [{k:'dep', s:'DEPENDENT', label:'Dependent: arose in response to D’s conduct'}, {k:'ind', s:'INDEPENDENT', label:'Independent: not produced by D’s conduct'}];
-  var CHAIN_OPTS = [{k:'holds', s:'CHAIN HOLDS', label:'Chain holds: D is the proximate cause'}, {k:'breaks', s:'CHAIN BREAKS', label:'Chain breaks: the intervening cause relieves D'}];
+  var DEP_OPTS = [
+    {k:'nature', s:'ACT OF NATURE', label:'Act of nature'},
+    {k:'third', s:'ACT OF A THIRD PARTY', label:'Act of a third party'},
+    {k:'victim', s:'ACT OF THE VICTIM', label:'Act of the victim'}
+  ];
+  var CHAIN_OPTS = [{k:'holds', s:'CHAIN HOLDS', label:'Chain holds: D is the proximate cause'}, {k:'breaks', s:'CHAIN BREAKS', label:'Chain breaks: the intervening act shields D'}];
   var CHAIN_DATA = [
-    {text:"D stabs V. At the hospital, V's doctor treats the wound negligently, and V dies.",
-     a1:'dep', w1:"The treatment happens only because of the stabbing, so it's responsive to D's conduct.",
-     a2:'holds', w2:"Per the outline, negligence by the doctor treating the victim is generally foreseeable. It doesn't relieve D."},
-    {text:"D stabs V. The treating doctor's conduct is so bizarre that, looking back, it is unusual and extraordinary, not merely careless. V dies from that treatment.",
-     a1:'dep', w1:"It's still a response to D's conduct: V was in the doctor's care because of the stab wound.",
-     a2:'breaks', w2:"A dependent act relieves D when it is “abnormal,” meaning not just unforeseeable but unusual or extraordinary in hindsight."},
-    {text:"D ties V to a tree in an open field and leaves. A lightning strike kills V.",
-     a1:'ind', w1:"D didn't produce the lightning. It's a force of nature that happened to coincide with D's act.",
-     a2:'breaks', w2:"The outline's example: actions by a force of nature not within the defendant's control are generally not foreseeable."},
-    {text:"D poisons V's coffee. On the way to the hospital, a terrible crash closes the freeway and adds 30 minutes. The doctor testifies V would have survived if she had arrived sooner.",
-     a1:'ind', w1:"The crash had nothing to do with D's poisoning. It wasn't a response to D's conduct.",
-     a2:'holds', w2:"This is the slide's open question: was the delay “highly extraordinary”? Under the outline, D stays responsible unless the intervening act was so out of the ordinary that holding D would be unjust. The poison did the killing, and nobody controlled the crash in a way that shifts blame, so the stronger answer is that the chain holds. Be ready to argue the other side."},
-    {text:"D brutally injures V. Weeks later, to escape the pain from those injuries, V takes her own life.",
-     a1:'dep', w1:"V's act was a response to the injuries D inflicted.",
-     a2:'holds', w2:"The outline's example: a victim's suicide to escape the pain caused by the defendant's injuries is typically foreseeable."},
-    {text:"D shoots V in the leg. While V recovers in the hospital, X, who has nothing to do with D, sneaks in and kills V.",
-     a1:'ind', w1:"X acted on his own. The killing wasn't produced by or responsive to D's shooting.",
-     a2:'breaks', w2:"A third party's act that is independent of the defendant's conduct and unforeseeable relieves D of liability for the death."},
-    {text:"D seriously wounds V. V refuses the medical treatment that would have saved her and dies of the wound.",
-     a1:'dep', w1:"V's decision was a reaction to the wound D inflicted.",
-     a2:'holds', w2:"Per the outline, actions by the victim are typically foreseeable, so they don't break the chain."},
-    {text:"On Halloween, A, who often does chores for a frail, seriously ill elderly woman, walks to her dark front door in a zombie costume. She sees him on her Ring camera, becomes terrified, and has a fatal heart attack.",
-     a1:'dep', w1:"Her fright and heart attack were a direct response to A's approach.",
-     a2:'holds', w2:"The slide hypo. A knew how frail she was, which makes her fatal reaction hard to call unforeseeable, and her condition doesn't break the chain. Causation is the easier part here; A's mental state decides whether this is any homicide offense."}
+    {text:"A drives negligently. To avoid A's swerving car, B takes an unfamiliar route home. Lightning strikes B's car, and B dies.",
+     a1:'nature', w1:"Lightning is an act of nature.",
+     a2:'breaks', w2:"The outline's example: A can't be charged with manslaughter. The lightning strike was a mere coincidence, and an intervening act that is a mere coincidence shields the defendant."},
+    {text:"A, intending to kill B, merely wounds him. B receives negligent medical treatment at a nearby hospital and dies.",
+     a1:'third', w1:"The hospital staff are third parties.",
+     a2:'holds', w2:"The outline's example: despite improvements in medical care, negligent care remains a foreseeable risk, so A is liable for B's death."},
+    {text:"A, intending to kill B, merely wounds him. At the hospital, a doctor intentionally mistreats B, and B dies from that mistreatment.",
+     a1:'third', w1:"The doctor is a third party.",
+     a2:'breaks', w2:"The outline: the result is different if B died because of gross negligence or intentional mistreatment. That kind of intervening act is a superseding factor."},
+    {text:"A shoots B in the leg. B is taken to a hospital for surgery, the wrong gas is used as an anesthetic, and B dies. Wounds like B's are generally not deadly.",
+     a1:'third', w1:"The surgical staff are third parties.",
+     a2:'holds', w2:"From the outline's summary example: but for A's shot, B would not have died, and negligent medical care isn't a superseding factor unless it is “gross” negligence or intentional malpractice."},
+    {text:"A, intending to kill B, merely wounds him. For religious reasons, B refuses medical treatment that would have saved him, and he dies.",
+     a1:'victim', w1:"The refusal is B's own act.",
+     a2:'holds', w2:"Most jurisdictions hold A liable, according to the outline, because A's act directly created the risk of death and the refusal of medical care may be found foreseeable."},
+    {text:"A badly wounds B. In unbearable pain from the wounds, B commits suicide.",
+     a1:'victim', w1:"The suicide is B's own act.",
+     a2:'holds', w2:"The outline: the rule can apply even when the victim acts affirmatively to harm himself. The suicide may be found a foreseeable consequence of A's actions, so A is liable for B's death."},
+    {text:"A badly wounds B. While B recovers in the hospital, a tornado tears the roof off his room and kills him.",
+     a1:'nature', w1:"A tornado is an act of nature.",
+     a2:'breaks', w2:"Like the outline's lightning example, this is a mere coincidence, outside the foreseeable sphere of risk A's act created. It shields A from liability for the death."},
+    {text:"A intentionally sets fire to a dwelling. B, a firefighter, dies trying to put out the blaze.",
+     a1:'victim', w1:"B's own act of fighting the fire is the intervening act.",
+     a2:'holds', w2:"The outline's example: the death of a firefighter is a foreseeable consequence of setting a fire."},
+    {text:"A intentionally sets fire to a dwelling. C, the owner, has a heart attack while watching his largest possession burn, and dies.",
+     a1:'victim', w1:"C's reaction to watching the fire is his own.",
+     a2:'breaks', w2:"Same example in the outline: as to C, A is not guilty of felony murder, because the heart attack was unforeseeable."}
   ];
 
   var MALICE_OPTS = [
-    {k:'itk', s:'INTENT TO KILL', label:'Intent to kill'},
-    {k:'sbh', s:'SERIOUS BODILY HARM', label:'Intent to inflict serious bodily harm'},
-    {k:'dh',  s:'DEPRAVED HEART', label:'Depraved heart (reckless indifference)'},
-    {k:'fm',  s:'FELONY MURDER', label:'Felony murder'},
-    {k:'none',s:'BELOW MALICE', label:'Below malice: not murder'}
+    {k:'itk', s:'INTENT TO KILL', label:'Intent to kill (express malice)'},
+    {k:'sbh', s:'GREAT BODILY INJURY', label:'Intent to inflict great bodily injury'},
+    {k:'dh',  s:'ABANDONED & MALIGNANT HEART', label:'Reckless indifference to an unjustifiably high risk to human life'},
+    {k:'fm',  s:'FELONY MURDER', label:'Intent to commit a felony (felony murder)'},
+    {k:'none',s:'NO MALICE', label:'No malice aforethought'}
   ];
   var MALICE_DATA = [
-    {text:"A intends to kill B, aims a gun at B, and shoots. B dies.", ans:'itk',
-     why:"The outline's example. An inference of intent to kill may also be made from the intentional use of a deadly weapon."},
-    {text:"A intentionally hits B over the head with a baseball bat, meaning to hurt B but not kill him. B later dies of a skull fracture.", ans:'sbh',
-     why:"The outline's example: A is guilty of murder because of the intent to inflict serious bodily harm, even without intent to kill."},
-    {text:"As a joke, A stands on a highway overpass and drops a bowling ball into oncoming traffic. It kills B, a passing motorist.", ans:'dh',
-     why:"The outline's example of depraved heart: no intent to kill B, but reckless indifference to an unjustifiably high risk to human life."},
-    {text:"While committing a burglary, A accidentally shoots and kills the homeowner.", ans:'fm',
-     why:"The outline's example: burglary is a BARRK felony, so the unintended killing can be charged as felony murder."},
-    {text:"Jake, an experienced marksman, fires his rifle repeatedly into the air above a crowded festival, knowing the bullets must come down somewhere. One kills an attendee.", ans:'dh',
-     why:"Slide Hypothetical #2. Jake didn't target anyone, but his conduct showed extreme recklessness and conscious disregard for human life. That's depraved-heart murder."},
-    {text:"A parent, under a duty to care for a sick child, fails to get the child medical care. The child dies.", ans:'none',
-     why:"The outline gives this as an example of criminal negligence, which supports involuntary manslaughter, not malice."},
-    {text:"A plans the killing of B for weeks, then poisons B's dinner. B dies.", ans:'itk',
-     why:"Planning a poisoning shows intent to kill. The outline also lists poisoning among the egregious acts that can make a murder first degree."},
-    {text:"A waits in the getaway car while his partner robs a store. Inside, the partner kills the clerk.", ans:'fm',
-     why:"Robbery is a BARRK felony, and cofelons (including accessories) are vicariously liable for a death that's a foreseeable consequence of the felony."},
-    {text:"Maria drives 90 mph through a residential neighborhood at 3:00 PM on a school day, weaving and running stop signs. She has done this many times before without incident. This time she kills a child in a crosswalk.", ans:'dh',
-     why:"Slide Hypothetical #3. Her lack of intent and past luck don't matter. Driving like this shows reckless indifference to human life, which is depraved heart."},
-    {text:"A briefly glances away from the road while driving at the speed limit and strikes a pedestrian, who dies.", ans:'none',
-     why:"Momentary carelessness isn't reckless indifference, and the outline says criminal negligence requires more than the ordinary negligence of tort law. Nothing here shows malice."},
-    {text:"D points a gun at A, intending to kill A, but misses and kills B, who was standing nearby.", ans:'itk',
-     why:"Transferred intent (a “bad aim” case). D's intent to kill A transfers to B, so D is guilty of B's murder and the attempted murder of A."},
-    {text:"During an argument, A fires a gun at B's head from close range. B dies. A insists he never meant for B to die.", ans:'itk',
-     why:"An inference of intent to kill may be made from the intentional use of a deadly weapon, and from the natural and probable consequences of voluntary acts."},
-    {text:"Which felonies make up BARRK, the traditional inherently dangerous felonies for felony murder?",
-     opts:[{k:'a',s:'Burglary, Arson, Rape, Robbery, Kidnapping',label:'Burglary, arson, rape, robbery, kidnapping'},{k:'b',s:'Battery, Assault, Rape, Robbery, Kidnapping',label:'Battery, assault, rape, robbery, kidnapping'},{k:'c',s:'Burglary, Arson, Racketeering, Robbery, Kidnapping',label:'Burglary, arson, racketeering, robbery, kidnapping'},{k:'d',s:'Bribery, Arson, Rape, Robbery, Kidnapping',label:'Bribery, arson, rape, robbery, kidnapping'}],
-     ans:'a', why:"That's BARRK. Per the outline, neither murder nor manslaughter can be the basis for a felony-murder charge."},
-    {text:"D commits an aggravated battery on V, who dies. Can the prosecutor use the aggravated battery as the predicate for felony murder?",
-     opts:[{k:'a',s:'YES: IT IS DANGEROUS',label:'Yes: it is a dangerous felony'},{k:'b',s:'NO: MERGER',label:'No: it merges because it isn’t independent of the killing'},{k:'c',s:'ONLY IF D INTENDED DEATH',label:'Only if D intended to kill'},{k:'d',s:'ONLY IN MINORITY STATES',label:'Only in proximate-cause jurisdictions'}],
-     ans:'b', why:"Merger. The underlying felony must be independent of the killing itself, and the outline says aggravated battery can't be the basis for felony murder. The slides: an assault resulting in death is not felony murder."},
-    {text:"Hines v. State (slides): a convicted felon in possession of a firearm goes turkey hunting, and a person is killed. The predicate felony is possession of a firearm by a convicted felon. What question decides felony murder?",
-     opts:[{k:'a',s:'IS IT ON THE BARRK LIST?',label:'Whether the felony is on the BARRK list'},{k:'b',s:'FORESEEABLE RISK OF DEATH?',label:'Whether the circumstances created a foreseeable risk of death'},{k:'c',s:'DID HE INTEND TO KILL?',label:'Whether the felon intended to kill'},{k:'d',s:'DID THE VICTIM CONSENT?',label:'Whether the victim consented to the risk'}],
-     ans:'b', why:"The question the slide highlights from Hines: did the circumstances create a foreseeable risk of death?"},
-    {text:"How does MPC § 210.2(1)(b) deal with killings during robbery, rape, arson, burglary, kidnapping, or felonious escape?",
-     opts:[{k:'a',s:'SAME AS COMMON LAW',label:'It adopts the common-law felony-murder rule unchanged'},{k:'b',s:'IGNORES FELONIES',label:'It gives felonies no role in murder'},{k:'c',s:'PRESUMES EXTREME RECKLESSNESS',label:'Recklessness and extreme indifference are presumed'},{k:'d',s:'ALWAYS FIRST DEGREE',label:'Every such death is first-degree murder'}],
-     ans:'c', why:"From the slide: murder includes killings committed recklessly with extreme indifference to human life, and that recklessness and indifference are presumed if the actor is engaged in one of the listed felonies."}
+    {text:"A plans B's death for weeks, then shoots B through the heart. B dies.", ans:'itk',
+     why:"Intent to kill is express malice."},
+    {text:"A intentionally pilots a speedboat through a group of swimmers, killing one.", ans:'itk',
+     why:"The outline's example of the deadly weapon rule: intentional use of a deadly weapon authorizes a permissive inference of intent to kill. A deadly weapon is any instrument used in a manner calculated or likely to produce death or serious bodily injury, and a speedboat used this way qualifies."},
+    {text:"A professional boxer beats up a belligerent tavern owner, who dies of the beating.", ans:'itk',
+     why:"Another of the outline's deadly-weapon examples. In some limited circumstances, a part of the body can be a deadly weapon, and its intentional use supports an inference of intent to kill."},
+    {text:"A finds B letting the air out of his tire. As revenge, A shoots B in the leg, intending only to wound him. B dies after surgery.", ans:'sbh',
+     why:"From the outline's summary example: even if A intended only to wound B with a bullet, that is intent to inflict great bodily injury, which is sufficient for malice aforethought."},
+    {text:"Just to see what happens, A fires a rifle at a passing passenger train. A bullet kills a passenger. A didn't want anyone to die.", ans:'dh',
+     why:"No intent to kill or injure, but reckless indifference to an unjustifiably high risk to human life: the “abandoned and malignant heart.” It's implied malice."},
+    {text:"During a nighttime burglary, A's gun goes off by accident and kills the homeowner.", ans:'fm',
+     why:"Malice is implied from the intent to commit the underlying felony. Even an accidental killing during the course of a felony is murder."},
+    {text:"A and C agree to rob a store. A waits outside; inside, C kills the clerk.", ans:'fm',
+     why:"The outline: when felony murder combines with conspiracy, all members of the conspiracy are liable for murder if the death was caused in furtherance of the conspiracy and was a foreseeable consequence of it."},
+    {text:"K drives slightly over the speed limit on a good road in excellent weather. V dashes out from behind a bush and is killed by K's car.", ans:'none',
+     why:"The outline's example. Nothing here shows any of the four malice states of mind, and the outline says K isn't even guilty of misdemeanor manslaughter, because speeding isn't malum in se and the death wasn't foreseeable."},
+    {text:"Which form of malice aforethought is “express” malice?",
+     opts:[{k:'a',s:'INTENT TO KILL',label:'Intent to kill'},{k:'b',s:'GREAT BODILY INJURY',label:'Intent to inflict great bodily injury'},{k:'c',s:'MALIGNANT HEART',label:'Abandoned and malignant heart'},{k:'d',s:'FELONY MURDER',label:'Intent to commit a felony'}],
+     ans:'a', why:"Intent to kill is express malice. The other three states of mind are “implied” malice."},
+    {text:"What does the deadly weapon rule do?",
+     opts:[{k:'a',s:'REQUIRES MURDER VERDICT',label:'It requires a murder conviction'},{k:'b',s:'PERMISSIVE INFERENCE',label:'It authorizes a permissive inference of intent to kill'},{k:'c',s:'ONLY GUNS COUNT',label:'It applies only to firearms'},{k:'d',s:'REDUCES TO MANSLAUGHTER',label:'It reduces murder to manslaughter'}],
+     ans:'b', why:"Intentional use of a deadly weapon authorizes a permissive inference of intent to kill. It's an inference the jury may draw, not a requirement."},
+    {text:"Which felonies do felony-murder statutes most commonly list as the basis for first-degree felony murder?",
+     opts:[{k:'a',s:'Burglary, Arson, Rape, Robbery, Kidnapping',label:'Burglary, arson, rape, robbery, and kidnapping'},{k:'b',s:'Battery, Assault, Rape, Robbery, Kidnapping',label:'Battery, assault, rape, robbery, and kidnapping'},{k:'c',s:'Burglary, Arson, Theft, Fraud, Kidnapping',label:'Burglary, arson, theft, fraud, and kidnapping'},{k:'d',s:'Any felony at all',label:'Any felony at all'}],
+     ans:'a', why:"The outline: the felonies most commonly listed are burglary, arson, rape, robbery, and kidnapping. Other felonies that are inherently dangerous to human life are often added."},
+    {text:"D commits an aggravated battery on V, who dies. Can the aggravated battery be the underlying felony for felony murder?",
+     opts:[{k:'a',s:'YES: IT IS A FELONY',label:'Yes: it is a felony'},{k:'b',s:'NO: NOT INDEPENDENT',label:'No: the felony must be independent of the killing'},{k:'c',s:'ONLY IF D INTENDED DEATH',label:'Only if D intended to kill'},{k:'d',s:'ONLY IF IT IS LISTED',label:'Only if the statute lists it'}],
+     ans:'b', why:"The outline: felony murder applies only where the underlying felony is independent of the killing, so a felony such as manslaughter or aggravated battery won't qualify."},
+    {text:"Charged with felony murder, D proves a substantive defense that negates an element of the underlying felony. Effect?",
+     opts:[{k:'a',s:'DEFENSE TO FELONY MURDER',label:'It is a defense to felony murder'},{k:'b',s:'NO EFFECT',label:'It has no effect on the felony-murder charge'},{k:'c',s:'REDUCES TO 2ND DEGREE',label:'It reduces the charge to second degree'},{k:'d',s:'ONLY A PROCEDURAL BAR',label:'It works only like a statute of limitations'}],
+     ans:'a', why:"The prosecution must prove D committed or attempted the underlying felony, so a substantive defense negating an element is a defense to felony murder. Procedural defenses, e.g., the statute of limitations on the underlying felony, are not a defense in most states."},
+    {text:"Under the majority rule, what must be true of the death for felony murder?",
+     opts:[{k:'a',s:'D INTENDED IT',label:'The felon intended it'},{k:'b',s:'FORESEEABLE RESULT',label:'It was a foreseeable result of committing the felony'},{k:'c',s:'CAUSED BY A WEAPON',label:'It was caused by a weapon'},{k:'d',s:'NOTHING MORE',label:'Nothing beyond occurring during a felony'}],
+     ans:'b', why:"The majority rule requires that death be a foreseeable result of the felony, though courts have been willing to find most deaths foreseeable. A minority only require that the felony be malum in se."},
+    {text:"A state lists the felonies for first-degree felony murder. D causes a death while committing a felony that isn't on the list, and a separate statute covers it. How is the killing typically classified?",
+     opts:[{k:'a',s:'FIRST-DEGREE MURDER',label:'First-degree murder'},{k:'b',s:'SECOND-DEGREE MURDER',label:'Second-degree murder'},{k:'c',s:'NOT A HOMICIDE',label:'Not a homicide'},{k:'d',s:'VOLUNTARY MANSLAUGHTER',label:'Voluntary manslaughter'}],
+     ans:'b', why:"The outline: a separate statute or case may cover a killing during a felony that isn't listed, and such killings typically will be second-degree murder."},
+    {text:"A shoots at B, intending to kill him, from close range during an argument. B dies. A says he only meant to scare him.", ans:'itk',
+     why:"Firing a gun at someone is intentional use of a deadly weapon, which authorizes a permissive inference of intent to kill despite A's claim."}
   ];
 
   var HOP_OPTS = [
-    {k:'mit', s:'MITIGATED', label:'Mitigated: all elements met, so voluntary manslaughter'},
-    {k:'prov', s:'NO PROVOCATION', label:'Fails: no adequate provocation'},
-    {k:'cool', s:'COOLED OFF', label:'Fails: enough time to cool off'},
-    {k:'actual', s:'NOT IN PASSION', label:'Fails: not actually inflamed, or intent to kill came first'}
+    {k:'mit', s:'MITIGATED', label:'Mitigated: all four tests met, so voluntary manslaughter'},
+    {k:'prov', s:'INADEQUATE PROVOCATION', label:'Fails: wouldn’t arouse sudden, intense passion in an ordinary person'},
+    {k:'cool', s:'TIME TO COOL', label:'Fails: enough time for a reasonable person to cool'},
+    {k:'actual', s:'NOT IN FACT', label:'Fails: D wasn’t in fact provoked, or in fact cooled off'}
   ];
   var HEAT_DATA = [
-    {text:"D comes home and discovers his spouse in the act of adultery. In a rage, D immediately kills the lover.", ans:'mit',
-     why:"The outline lists discovery of adultery by a spouse as adequate provocation, and there was no time to cool off."},
-    {text:"A co-worker yells within inches of D's face that he knows D stole from their employer, that he'll get D fired, and that he'll get the promotion D wanted. D kills him.", ans:'prov',
-     why:"Words alone cannot constitute provocation (People v. Pouncey). Taunts and threats to report don't qualify."},
-    {text:"V threatens D with deadly force. Enraged, D immediately kills V.", ans:'mit',
-     why:"The outline lists a threat of deadly force as adequate provocation, and D acted immediately."},
-    {text:"D learns of his spouse's affair. Two weeks later, after thinking it over, D drives to the lover's house and kills him.", ans:'cool',
-     why:"If there was enough time for a reasonable person to cool off, murder is not mitigated. Two weeks is plenty."},
-    {text:"D had decided long ago to kill V. One day V gives D a minor shove, and D carries out his plan.", ans:'actual',
-     why:"There must be a causal connection between the provocation, the passion, and the killing. When the intent to kill was formed before the provocation, there's no mitigation."},
-    {text:"V commits a serious battery on D. Moments later, still in a rage, D kills V.", ans:'mit',
-     why:"A serious battery is adequate provocation under the outline, and D had no time to cool off."},
-    {text:"Police arrest D unlawfully. In the heat of passion, D intentionally kills an officer while resisting.", ans:'mit',
-     why:"The outline: an intentional killing while resisting arrest is generally murder, but it can be manslaughter if the arrest was unlawful and D acted in the heat of passion."},
-    {text:"Provoked by V's serious battery, D, in a rage, shoots at V but accidentally kills a bystander.", ans:'mit',
-     why:"Transferred provocation. If D accidentally kills the wrong person, D is guilty of voluntary manslaughter if that would have been the crime had D killed the provoker. Intentionally killing a known innocent bystander would stay murder."},
-    {text:"Extreme emotional disturbance jurisdiction. D's emotional disturbance has built up over a long time, and D kills V well after the last upsetting event. Can D seek mitigation?",
-     opts:[
-       {k:'eed', s:'YES: EED', label:'Possibly: EED is broader, with no cooling-down inquiry'},
-       {k:'cool2', s:'NO: COOLED OFF', label:'No: too much time has passed to cool off'},
-       {k:'words', s:'NO: WORDS ALONE', label:'No: there was no physical provocation'},
-       {k:'never', s:'NO: NEVER', label:'No: only heat of passion can mitigate murder'}],
-     ans:'eed',
-     why:"State v. Elliott (from the slides): extreme emotional disturbance is broader than heat of passion and has no cooling-down inquiry, so the time gap doesn't end the analysis."}
+    {text:"D comes home and discovers his spouse in bed with another person. In a sudden rage, D kills the other person on the spot.", ans:'mit',
+     why:"Discovering one's spouse in bed with another person is one of the situations where adequate provocation is most frequently recognized, and D acted before any cooling time passed."},
+    {text:"V attacks D without warning and beats him badly. Seconds later, enraged, D grabs a bottle and kills V.", ans:'mit',
+     why:"Being subjected to a serious battery is a classic case of adequate provocation, and the killing followed immediately."},
+    {text:"V draws a knife and threatens to kill D. In a burst of fury, D wrestles the knife away and kills V.", ans:'mit',
+     why:"A threat of deadly force is one of the most frequently recognized forms of adequate provocation."},
+    {text:"A co-worker calls D a string of vile names in front of the office. D, furious, kills him.", ans:'prov',
+     why:"At common law, “mere words” were inadequate provocation as a matter of law. The outline notes a modern shift: courts are more reluctant to take such cases from juries and are more likely to let the jury decide whether mere words were adequate provocation."},
+    {text:"D learns of his spouse's affair, broods over it for two weeks, then drives across town and kills the other person.", ans:'cool',
+     why:"There must not have been sufficient time for a reasonable person's passions to cool. Two weeks is plenty. The outline treats this as a factual question that depends on the nature of the provocation and the surrounding circumstances."},
+    {text:"V shoves D lightly. D, calm and unbothered, says he has wanted V dead for years and shoots him.", ans:'actual',
+     why:"The defendant must in fact have been provoked. D's calm and his statement show he never was."},
+    {text:"V punches D hard in the face. D is furious at first, but within minutes he is laughing and chatting with friends. An hour later, he walks over and kills V.", ans:'actual',
+     why:"The defendant must in fact not have cooled off between the provocation and the killing. Whatever a reasonable person would have done, D actually calmed down."},
+    {text:"A catches B letting the air out of A's tire and shouts at him. B throws a rock at A and screams obscenities, then runs. A grabs a gun from his car and shoots B, who dies. A says he acted out of rage.", ans:'mit',
+     why:"From the outline's summary example: B's shouted obscenities alone might not be adequate provocation, but a jury could certainly find that throwing the rock was. On these facts, heat of passion is available."},
+    {text:"Imperfect self-defense: D honestly but unreasonably believes deadly force is needed to protect himself, and kills V. In states that recognize the doctrine, what happens?",
+     opts:[{k:'a',s:'COMPLETE ACQUITTAL',label:'D is acquitted outright'},{k:'b',s:'REDUCED TO MANSLAUGHTER',label:'Murder may be reduced to manslaughter'},{k:'c',s:'RAISED TO 1ST DEGREE',label:'The killing becomes first-degree murder'},{k:'d',s:'NO EFFECT',label:'It has no effect'}],
+     ans:'b', why:"Some states recognize imperfect self-defense, under which a murder may be reduced to manslaughter when the defendant unreasonably but honestly believed in the necessity of responding with deadly force."},
+    {text:"D starts a fight with V, then kills V in what D claims was self-defense. In a state that recognizes imperfect self-defense, does D's fault in starting the altercation bar the doctrine?",
+     opts:[{k:'a',s:'YES: FAULT BARS IT',label:'Yes: being at fault bars the doctrine'},{k:'b',s:'NO: IT CAN STILL APPLY',label:'No: murder may still be reduced to manslaughter'},{k:'c',s:'ONLY WITH A WEAPON',label:'Only if V had a weapon'},{k:'d',s:'ONLY IF V CONSENTED',label:'Only if V agreed to fight'}],
+     ans:'b', why:"The outline: imperfect self-defense may reduce murder to manslaughter even though the defendant was at fault in starting the altercation."}
   ];
 
   var GRADE_OPTS = [
@@ -787,83 +800,85 @@
     {k:'m2', label:'Second-degree murder'},
     {k:'vm', label:'Voluntary manslaughter'},
     {k:'im', label:'Involuntary manslaughter'},
-    {k:'nh', label:'Not criminal homicide'}
+    {k:'nh', label:'Not a criminal homicide'}
   ];
   var LADDER_DATA = [
-    {text:"D and V, co-workers, argue. V, inches away, yells that D stole money and taunts him about a promotion. D keeps looking at a heavy paperweight and realizes he could easily grab it. As V yells “I'm turning you in” and turns to walk away, D grabs it and hits V in the head, killing him.", ans:'m1',
-     why:"Slide Hypothetical #1, answer D: he had time to decide to commit murder and reflect on it. Under the Thompson statute, any length of time that permits reflection is enough. Words alone don't create heat of passion."},
-    {text:"Jake fires his rifle repeatedly into the air above a crowded festival “to celebrate.” A bullet kills an attendee. Jake says he didn't intend to kill anyone.", ans:'m2',
-     why:"Slide Hypothetical #2: depraved-heart murder. The slides place depraved heart under second degree (malice aforethought only)."},
-    {text:"Maria drives 90 mph through a residential neighborhood on a school afternoon, running stop signs, and kills a child. She says, “Oh my God, I never meant for this to happen.”", ans:'m2',
-     why:"Slide Hypothetical #3, answer B: second-degree, depraved-heart murder. Using a car doesn't limit it to vehicular manslaughter, and a child victim doesn't make it first degree."},
-    {text:"D, 6'2\" and 220 pounds and a former college baseball player, argues with his 5'6\" neighbor. Muttering and cursing, he walks over and swings a bat with considerable force at the neighbor's head, killing him. D says he only meant to scare him.", ans:'m2',
-     why:"Slide hypo, answer B. A single blow out of an argument isn't strong evidence of premeditation, the argument isn't heat-of-passion provocation, and the outline's bat example shows that striking the head with intent to cause serious harm is malice. Second-degree murder."},
-    {text:"D carefully plans and carries out the killing of his terminally ill spouse, at the spouse's request, to end the spouse's suffering.", ans:'m1',
-     why:"A mercy killing (the slides pair this with Gilbert v. State and mandatory minimum sentences). Per the outline, consent is not a defense to homicide, and the planning shows premeditation and deliberation."},
-    {text:"D drives 45 in a 35 zone in a heavy snowstorm, late for his daughter's party. He accelerates through a yellow light, skids on ice, and kills a pedestrian in the crosswalk. He knew the roads were icy but thought he was a good enough driver.", ans:'im',
-     why:"Adapted from the slide hypo (where the pedestrian was injured). He was aware of the risk and consciously disregarded it, which is recklessness: MPC involuntary manslaughter. The outline notes reckless driving alone generally isn't depraved heart unless it's extreme, e.g., combined with intoxication."},
-    {text:"Parents, under a duty to care for their sick child, fail to provide medical care. The child dies.", ans:'im',
-     why:"The outline's example of criminal negligence, which supports involuntary manslaughter."},
-    {text:"D discovers his spouse in the act of adultery and immediately kills the lover in a rage.", ans:'vm',
-     why:"An intentional killing in the heat of passion after adequate provocation, with no time to cool off."},
-    {text:"D stabs V in bed. V had already died of a heart attack an hour earlier.", ans:'nh',
-     why:"A living human being must die for a homicide, and a person can't be killed twice. D may be charged with attempted murder."},
-    {text:"D commits a battery, a malum in se misdemeanor, by shoving V. V falls and dies. D never intended serious harm.", ans:'im',
-     why:"The outline's misdemeanor-manslaughter rule: a killing during a malum in se misdemeanor (e.g., battery) is involuntary manslaughter."},
-    {text:"During a bank robbery, D's gun accidentally discharges and kills a teller.", ans:'m1',
-     why:"Under the assumed statute, a killing during a BARRK felony (robbery) is first-degree felony murder. No intent to kill or premeditation is needed."}
+    {text:"After deciding calmly that B must die, A hides behind a wall for an hour waiting for B to walk by, then shoots him.", ans:'m1',
+     why:"Killing by lying in wait may be first-degree murder under statutes the outline describes. The calm decision and the waiting also show deliberation and premeditation."},
+    {text:"A tortures B for hours, and B dies from the torture.", ans:'m1',
+     why:"Some statutes make killings performed in certain ways first-degree murder, including killing by torture."},
+    {text:"A slowly poisons B over several weeks, and B dies.", ans:'m1',
+     why:"Killing by poison may be first-degree murder under these statutes."},
+    {text:"During a robbery, A's gun accidentally discharges and kills a teller. The state's statute lists robbery as a felony-murder felony.", ans:'m1',
+     why:"A killing during one of the enumerated felonies is usually first-degree murder without proof that it was deliberate or premeditated."},
+    {text:"A causes a death while committing a felony that the state's felony-murder list doesn't include. A separate statute covers killings during unlisted felonies.", ans:'m2',
+     why:"Killings during felonies not on the list typically will be classified as second-degree murder."},
+    {text:"A finds B letting the air out of his tire and, out of revenge, shoots B in the leg, meaning only to wound him. B dies in surgery. There is no adequate provocation.", ans:'m2',
+     why:"From the outline's summary example: intent to wound with a bullet is intent to inflict great bodily injury, which is malice. A almost certainly did not premeditate, so absent provocation it's murder, but not first degree. Under the outline's scheme, all murders are second degree unless something raises them."},
+    {text:"For fun, A fires a rifle at a passing passenger train, and a passenger dies.", ans:'m2',
+     why:"Abandoned-and-malignant-heart recklessness is malice aforethought, but nothing makes it deliberate and premeditated. That leaves second-degree murder."},
+    {text:"D discovers his spouse in bed with another person and immediately kills that person in a rage.", ans:'vm',
+     why:"A killing that would otherwise be murder becomes voluntary manslaughter when it was committed in the heat of passion after adequate provocation."},
+    {text:"A causes a death through criminal negligence: a far greater deviation from the reasonable-person standard than civil negligence.", ans:'im',
+     why:"If death is caused by criminal negligence (or “recklessness” under the MPC), the killing is involuntary manslaughter."},
+    {text:"A commits a battery, a misdemeanor that is malum in se, by shoving V. V falls and dies.", ans:'im',
+     why:"Misdemeanor-manslaughter rule: a killing in the course of a misdemeanor is manslaughter, and most courts require that the misdemeanor be malum in se, i.e., inherently wrongful."},
+    {text:"K drives slightly over the speed limit on a good road in excellent weather. V dashes from behind a bush and is killed by K's car. Speeding is a misdemeanor.", ans:'nh',
+     why:"The outline's example: K isn't guilty of involuntary manslaughter, because speeding isn't malum in se and the death wasn't a foreseeable result of it."},
+    {text:"A state follows the traditional born-alive rule. D's attack on a pregnant woman kills the fetus before birth. Is the fetus's death a criminal homicide?", ans:'nh',
+     why:"Under the traditional rule, an infant had to be “born alive” (completely expelled and showing independent signs of vitality) to be a homicide victim. A number of states have changed this by statute."}
   ];
 
   var BOSS_DATA = [
-    {text:"To prove a homicide, what must the prosecution show about causation?",
-     opts:[{k:'a',s:'BOTH ACTUAL AND PROXIMATE',label:'Both actual cause and proximate cause'},{k:'b',s:'ACTUAL CAUSE ONLY',label:'Actual (but-for) cause only'},{k:'c',s:'PROXIMATE CAUSE ONLY',label:'Proximate cause only'},{k:'d',s:'NOTHING IF MALICE PROVEN',label:'Nothing, if malice is proven'}],
-     ans:'a', why:"Per the outline, the prosecution must prove both actual and proximate causation."},
-    {text:"For proximate cause, when is a death caused by the defendant's conduct deemed foreseeable?",
-     opts:[{k:'a',s:'D PREDICTED IT',label:'When the defendant actually predicted it'},{k:'b',s:'NATURAL AND PROBABLE RESULT',label:'When death is the natural and probable result of the conduct'},{k:'c',s:'D INTENDED IT',label:'Only when the defendant intended it'},{k:'d',s:'ANY BUT-FOR CAUSE',label:'Whenever the act is a but-for cause'}],
-     ans:'b', why:"The outline: a death is deemed foreseeable if death is the natural and probable result of the conduct. Its exam note adds that this standard is commonly tested with the felony-murder rule."},
-    {text:"Under the MPC, when the injury is generally of the type the defendant intended, proximate causation exists if the injury is...",
-     opts:[{k:'a',s:'THE SOLE CAUSE OF DEATH',label:'The sole cause of death'},{k:'b',s:'CERTAIN TO OCCUR',label:'Certain to occur'},{k:'c',s:'NOT TOO REMOTE OR ACCIDENTAL',label:'Not too remote or accidental in its occurrence to have a just bearing on the actor’s liability'},{k:'d',s:'WITHIN A YEAR AND A DAY',label:'Within a year and a day of the act'}],
-     ans:'c', why:"The MPC test quoted in the outline: the injury must not be too remote or accidental in its occurrence to have a just bearing on the actor's liability or the gravity of the offense."},
-    {text:"During a robbery, a police officer shoots at the fleeing robbers and kills a bystander. The jurisdiction follows the majority rule. Are the robbers guilty of felony murder?",
-     opts:[{k:'a',s:'YES: DIRECT RESULT',label:'Yes: the death was a direct consequence of the felony'},{k:'b',s:'YES: ANY DEATH',label:'Yes: any death during a felony is felony murder'},{k:'c',s:'NO: NOT THEIR AGENT',label:'No: the officer is not the felons’ agent'},{k:'d',s:'NO: COPS NEVER COUNT',label:'No: killings by police are never homicide'}],
-     ans:'c', why:"Under the agency theory (the majority rule: felon or agent), the felon isn't liable for a bystander killed by a police officer or felony victim, because neither is the felon's agent."},
-    {text:"Same facts, but the jurisdiction follows the minority rule. Now what?",
-     opts:[{k:'a',s:'LIABLE: DIRECT CONSEQUENCE',label:'The robbers may be liable because the death was a direct consequence of the felony'},{k:'b',s:'NOT LIABLE: OFFICER FIRED',label:'Still not liable, because the officer fired'},{k:'c',s:'ONLY THE OFFICER',label:'Only the officer can be charged'},{k:'d',s:'ONLY THE ARMED ROBBER',label:'Only the robber who carried a gun is liable'}],
-     ans:'a', why:"Under the proximate-cause theory (minority rule), liability for the bystander's death may attach because the death is a direct consequence of the felony."},
-    {text:"During a robbery, the store owner, acting in self-defense, shoots and kills one robber. Is the other robber guilty of felony murder for his partner's death?",
-     opts:[{k:'a',s:'YES: DURING FELONY',label:'Yes: the partner died during the felony'},{k:'b',s:'NO: REDLINE',label:'Generally no: the killing is a justifiable homicide (Redline)'},{k:'c',s:'MANSLAUGHTER ONLY',label:'Only manslaughter'},{k:'d',s:'ONLY IF HE WAS ARMED',label:'Only if he was armed'}],
-     ans:'b', why:"Under the Redline doctrine (in the outline), a felon generally isn't guilty of felony murder when a victim or officer, acting in self-defense or to prevent escape, kills the cofelon. That killing is justifiable homicide."},
-    {text:"Robbers flee the scene. Minutes later, still in flight, they cause a crash that kills a pedestrian. Is the death part of the felony?",
-     opts:[{k:'a',s:'NO: FELONY ENDED',label:'No: the robbery ended when they left'},{k:'b',s:'YES: FLIGHT COUNTS',label:'Yes: the felony continues during flight'},{k:'c',s:'VEHICULAR ONLY',label:'No: only vehicular manslaughter'},{k:'d',s:'ONLY IF INTENTIONAL',label:'Only if they meant to hit the pedestrian'}],
-     ans:'b', why:"The slides ask when the felony ends, looking at time, distance, and the causal relationship, and include deaths during flight. The outline makes it a defense only when death occurs after the felony and the ensuing flight."},
-    {text:"James Brady was shot in March 1981 and died in August 2014. What did the common-law year-and-a-day rule say about that gap?",
-     opts:[{k:'a',s:'NOTHING: POISON ONLY',label:'Nothing: it applied only to poisonings'},{k:'b',s:'NOT THE PROXIMATE CAUSE',label:'The act is conclusively presumed not to be the proximate cause'},{k:'c',s:'PRESUMED FIRST DEGREE',label:'The death is presumed first-degree murder'},{k:'d',s:'NEW LIMITATIONS PERIOD',label:'The statute of limitations restarts'}],
-     ans:'b', why:"Common law: death has to occur within a year and a day of the injury. Otherwise the act is conclusively presumed not to be the proximate cause. The outline notes most states have abolished or extended the rule."},
-    {text:"D gives V, who wants to die, the pills V uses to take her own life. Is D guilty of murder as an accomplice?",
-     opts:[{k:'a',s:'YES: BUT-FOR CAUSE',label:'Yes: D is a but-for cause of the death'},{k:'b',s:'GENERALLY NO',label:'Generally no: suicide is not homicide, though D may be guilty of a lesser crime'},{k:'c',s:'YES: CONSENT NO DEFENSE',label:'Yes: consent is not a defense to homicide'},{k:'d',s:'ONLY IF V WAS ILL',label:'Only if V was terminally ill'}],
-     ans:'b', why:"The outline: providing a person with the means to commit suicide generally does not make the provider guilty of murder as an accomplice, because suicide is not homicide. The provider may be guilty of a lesser crime, e.g., assisting a suicide."}
+    {text:"When a crime requires a specified result, what must the defendant's conduct be?",
+     opts:[{k:'a',s:'CAUSE-IN-FACT AND PROXIMATE',label:'Both the cause-in-fact and the proximate cause'},{k:'b',s:'CAUSE-IN-FACT ONLY',label:'The cause-in-fact only'},{k:'c',s:'PROXIMATE CAUSE ONLY',label:'The proximate cause only'},{k:'d',s:'THE SOLE CAUSE',label:'The sole cause'}],
+     ans:'a', why:"The outline: the defendant's conduct must be both the cause-in-fact and the proximate cause of the specified result."},
+    {text:"When do problems of proximate causation arise?",
+     opts:[{k:'a',s:'IN EVERY HOMICIDE',label:'In every homicide'},{k:'b',s:'DEATH IN UNEXPECTED WAY',label:'When death results from D’s acts but in a manner D didn’t intend or anticipate'},{k:'c',s:'ONLY WITH WEAPONS',label:'Only when a weapon is used'},{k:'d',s:'ONLY IN FELONY MURDER',label:'Only in felony murder'}],
+     ans:'b', why:"Proximate-cause problems arise only when the death occurs because of the defendant's acts, but in a manner not intended or anticipated. The question is whether that difference breaks the chain."},
+    {text:"A defendant didn't anticipate the precise way the death happened. Is the death still proximately caused?",
+     opts:[{k:'a',s:'NO: MUST FORESEE MANNER',label:'No: the precise manner must be anticipated'},{k:'b',s:'YES, IF NATURAL & PROBABLE',label:'Yes, if it was a natural and probable consequence of the conduct'},{k:'c',s:'ONLY IF INTENDED',label:'Only if D intended death'},{k:'d',s:'ONLY WITHIN 24 HOURS',label:'Only if death came within 24 hours'}],
+     ans:'b', why:"The general rule: a defendant is responsible for all results that occur as a “natural and probable” consequence of his conduct, even if he didn't anticipate the precise manner."},
+    {text:"What breaks a chain of proximate causation?",
+     opts:[{k:'a',s:'ANY LATER ACT',label:'Any later act by anyone'},{k:'b',s:'A SUPERSEDING FACTOR',label:'Only the intervention of a superseding factor'},{k:'c',s:'THE VICTIM’S WEAKNESS',label:'The victim’s preexisting condition'},{k:'d',s:'NEGLIGENT MEDICAL CARE',label:'Ordinary negligent medical care'}],
+     ans:'b', why:"The chain is broken only by the intervention of a superseding factor. A preexisting condition and ordinary negligent care don't do it."},
+    {text:"As a general rule, when does an intervening act shield the defendant from liability?",
+     opts:[{k:'a',s:'WHENEVER IT CONTRIBUTES',label:'Whenever it contributes to the death'},{k:'b',s:'COINCIDENCE / UNFORESEEABLE',label:'When it is a mere coincidence or outside the foreseeable sphere of risk'},{k:'c',s:'ONLY IF INTENTIONAL',label:'Only if the intervenor acted intentionally'},{k:'d',s:'NEVER',label:'Never'}],
+     ans:'b', why:"The outline's general rule: an intervening act shields the defendant if it is a mere coincidence or is outside the foreseeable sphere of risk created by the defendant's act."},
+    {text:"Under the common-law “year and a day” rule, what happens if the victim dies 14 months after being wounded?",
+     opts:[{k:'a',s:'NO HOMICIDE PROSECUTION',label:'No prosecution for homicide, even with but-for causation'},{k:'b',s:'FIRST-DEGREE MURDER',label:'Automatic first-degree murder'},{k:'c',s:'NOTHING CHANGES',label:'Nothing changes'},{k:'d',s:'ONLY CIVIL LIABILITY',label:'The family may sue but nothing else'}],
+     ans:'a', why:"The death had to occur within a year and a day of the injury; otherwise there could be no homicide prosecution. The U.S. Supreme Court called the rule “an outdated relic of the common law,” and most states that have reviewed it have abolished it."},
+    {text:"During a shootout at the scene of a robbery, a police officer accidentally kills a bystander. Under the agency theory, are the robbers guilty of felony murder?",
+     opts:[{k:'a',s:'YES: DURING THE FELONY',label:'Yes: the death happened during the felony'},{k:'b',s:'NO: OFFICER ISN’T THEIR AGENT',label:'No: the killing wasn’t by a felon or the felon’s agent'},{k:'c',s:'ONLY THE ARMED ROBBER',label:'Only the armed robber is liable'},{k:'d',s:'MANSLAUGHTER ONLY',label:'Only manslaughter'}],
+     ans:'b', why:"Under the agency theory, the killing must have been committed by the felon or his agent (an accomplice). Here a police officer caused the death, so there's no felony-murder liability."},
+    {text:"Same shootout, but the jurisdiction follows the proximate-cause theory. Are the robbers liable for the bystander's death?",
+     opts:[{k:'a',s:'YES: SET EVENTS IN MOTION',label:'Yes: they put into operation the events that caused the death'},{k:'b',s:'NO: OFFICER FIRED',label:'No: the officer fired the shot'},{k:'c',s:'ONLY IF THEY FIRED FIRST',label:'Only if they fired first'},{k:'d',s:'ONLY THE OFFICER',label:'Only the officer is liable'}],
+     ans:'a', why:"Under the proximate-cause theory, felons are liable for the deaths of innocent victims caused by someone other than a co-felon, since they put into operation the series of events that caused the death."},
+    {text:"While fleeing a robbery, a robber is shot and killed by a pursuing police officer. Is the surviving co-felon liable for murder?",
+     opts:[{k:'a',s:'YES: DIED DURING FELONY',label:'Yes: he died during the felony'},{k:'b',s:'NO: MAJORITY (REDLINE) VIEW',label:'No, under the majority Redline view'},{k:'c',s:'YES, UNDER AGENCY THEORY',label:'Yes, under the agency theory'},{k:'d',s:'ONLY IF CAUGHT',label:'Only if the survivor is caught'}],
+     ans:'b', why:"The majority Redline view: liability for murder cannot be based on the death of a co-felon resulting from resistance by the victim or police pursuit."}
   ];
 
   // ---------- Level definitions ----------
   var LV = {
     1:{name:'Malice Invaders', label:'Level 1 (Malice Invaders)', sec:25, pts:100,
-       recap:"Malice aforethought can be shown by intent to kill, intent to inflict serious bodily harm, depraved-heart reckless indifference, or felony murder. Intent may be inferred from the intentional use of a deadly weapon and from the natural and probable consequences of voluntary acts. Criminal negligence is not malice. Felony murder requires an inherently dangerous felony (BARRK) that is independent of the killing (merger); Hines asks whether the circumstances created a foreseeable risk of death, and the MPC presumes extreme-indifference recklessness for listed felonies.",
-       terms:"malice aforethought; intent to kill; serious bodily harm; depraved heart; felony murder; BARRK; merger; Hines v. State; MPC § 210.2(1)(b); transferred intent; criminal negligence"},
+       recap:"Murder is the unlawful killing of another human being with malice aforethought. Malice exists with intent to kill (express malice), or with intent to inflict great bodily injury, reckless indifference to an unjustifiably high risk to human life, or intent to commit a felony (implied malice). Intentional use of a deadly weapon permits an inference of intent to kill. Felony murder requires a felony independent of the killing, a foreseeable death under the majority rule, and proof of the underlying felony.",
+       terms:"malice aforethought; express vs. implied malice; great bodily injury; abandoned and malignant heart; deadly weapon rule; felony murder; enumerated felonies; independent felony; second-degree felony murder"},
     2:{name:'Heat Seekers', label:'Level 2 (Heat Seekers)', sec:30, pts:100,
-       recap:"Heat of passion mitigates murder to voluntary manslaughter when there is provocation, no cooling-down period, and a loss of self-control, each judged both by what the defendant actually experienced and by the reasonable person. Words alone don't count. The provocation must cause the killing. Extreme emotional disturbance is broader and has no cooling-down inquiry.",
-       terms:"heat of passion; adequate provocation; cooling off; reasonable person; People v. Pouncey; transferred provocation; unlawful arrest; State v. Elliott"},
+       recap:"Voluntary manslaughter is a killing that would otherwise be murder, committed in the heat of passion after adequate provocation. At common law the provocation had to meet four tests: it would arouse sudden and intense passion in an ordinary person, D was in fact provoked, there wasn't sufficient time for a reasonable person to cool, and D in fact didn't cool. Mere words were inadequate as a matter of law, though modern courts more often let juries decide. Some states recognize imperfect self-defense.",
+       terms:"adequate provocation; ordinary person; in fact provoked; cooling time; serious battery; threat of deadly force; spouse in bed with another; mere words; imperfect self-defense"},
     3:{name:'Ladder of Death', label:'Level 3 (Ladder of Death)', sec:40, pts:100,
-       recap:"Traditional grading runs from first-degree murder (premeditated and deliberate, or felony murder by statute) through second-degree murder (malice only, including depraved heart), voluntary manslaughter (passion killing), and involuntary manslaughter (criminal negligence, MPC recklessness, or misdemeanor-manslaughter). Premeditation can be brief but requires time to reflect. Consent is no defense.",
-       terms:"premeditation and deliberation (State v. Thompson); mercy killing (Gilbert v. State); depraved heart; recklessness vs. criminal negligence; misdemeanor-manslaughter"},
+       recap:"Under statutes dividing murder into degrees, all murders are second degree unless the prosecution proves something that raises them: a deliberate (cool and dispassionate) and premeditated (actually reflected on, if briefly) killing, a killing during an enumerated felony, or a killing by lying in wait, poison, or torture. Involuntary manslaughter covers criminal negligence and unlawful-act killings. Under the traditional born-alive rule, a fetus killed before birth isn't a homicide victim.",
+       terms:"first vs. second degree; deliberate; premeditated; lying in wait, poison, torture; voluntary manslaughter; criminal negligence; misdemeanor-manslaughter; malum in se vs. malum prohibitum; born-alive rule"},
     4:{name:'But-For Blaster', label:'Level 4 (But-For Blaster)', sec:18, pts:100,
-       recap:"Actual cause asks whether the victim would have died but for the defendant's act. Setting in motion the forces that kill counts. With multiple causes, the act must be a substantial factor. A preexisting condition doesn't supplant the defendant's act, accelerating death counts, and an independent cause that kills first means no homicide (attempt only).",
-       terms:"but-for cause; actual cause (cause-in-fact); substantial factor; preexisting condition; acceleration of death; independent cause"},
+       recap:"The defendant's conduct must be the cause-in-fact of the result: the result would not have occurred “but for” that conduct. Simultaneous acts can each be independently sufficient causes. A victim's preexisting condition doesn't break the chain because the defendant takes the victim as he finds him, and an act that hastens an inevitable result is still a cause.",
+       terms:"cause-in-fact; but-for test; simultaneous acts; preexisting condition; hastening an inevitable result"},
     5:{name:'Chain Gun', label:'Level 5 (Chain Gun)', sec:25, pts:100,
-       recap:"An intervening cause is an actual cause that occurs after the defendant's voluntary act. A dependent cause arises from and responds to the defendant's conduct and relieves the defendant only if abnormal. An independent cause relieves the defendant if it is unforeseeable. Ask about the cause's nature, foreseeability, control, contribution to the harm, and fairness.",
-       terms:"intervening cause; dependent vs. independent; foreseeability; abnormal; force of nature; fairness and justice"},
+       recap:"An intervening act shields the defendant if it is a mere coincidence or is outside the foreseeable sphere of risk the defendant created. Lightning is a coincidence. Negligent medical care is a foreseeable risk, but gross negligence or intentional mistreatment is not. A victim's refusal of treatment or suicide from unbearable pain may be found foreseeable.",
+       terms:"intervening act; superseding factor; mere coincidence; foreseeable sphere of risk; act of nature; third party; victim's own acts; gross negligence"},
     6:{name:'Legal Cause Mothership', label:'the Boss Round (Legal Cause Mothership)', sec:35, pts:150,
-       recap:"The prosecution must prove both actual and proximate cause. A death is foreseeable if it is the natural and probable result of the conduct, and the MPC asks whether the result is too remote or accidental to bear justly on liability. In felony murder, the majority (agency) rule covers killings by a felon or agent, the minority uses proximate cause, Redline excludes justified killings of cofelons, and the felony continues through flight. The year-and-a-day rule cut off late deaths, and supplying the means for a suicide generally isn't murder.",
-       terms:"actual and proximate cause; natural and probable result; MPC remote-or-accidental test; agency vs. proximate-cause rule; Commonwealth v. Redline; flight; year-and-a-day rule; assisted suicide"}
+       recap:"Conduct must be both the cause-in-fact and the proximate cause. Proximate-cause problems arise when death occurs in a manner not intended or anticipated; natural and probable results are proximately caused, and only a superseding factor breaks the chain. The common-law year-and-a-day rule barred late homicide prosecutions but has been widely abolished. In felony murder, the agency theory and the proximate-cause theory differ on killings by police or victims, and the majority Redline view excludes the death of a co-felon.",
+       terms:"cause-in-fact; proximate cause; natural and probable consequence; superseding factor; year-and-a-day rule; agency theory; proximate-cause theory; Redline"}
   };
   function levelItemCount(n){
     return {1:MALICE_DATA.length, 2:HEAT_DATA.length, 3:LADDER_DATA.length, 4:CATCH_DATA.length, 5:CHAIN_DATA.length*2, 6:BOSS_DATA.length}[n];
@@ -1045,10 +1060,10 @@
 
   function shSteps(n, item){
     if(n === 5){ return [
-      {q:'WAVE 1 OF 2: Is the intervening cause dependent or independent?', opts:DEP_OPTS, ans:item.a1, why:item.w1},
-      {q:'WAVE 2 OF 2: Does the causal chain hold or break?', opts:CHAIN_OPTS, ans:item.a2, why:item.w2}]; }
+      {q:'WAVE 1 OF 2: What kind of intervening act is this?', opts:DEP_OPTS, ans:item.a1, why:item.w1},
+      {q:'WAVE 2 OF 2: Does the chain of proximate causation hold or break?', opts:CHAIN_OPTS, ans:item.a2, why:item.w2}]; }
     if(n === 1) return [{q:item.opts ? 'Felony-murder rule: shoot the correct answer.' : 'Shoot the form of malice aforethought these facts show.', opts:item.opts || MALICE_OPTS, ans:item.ans, why:item.why}];
-    if(n === 2) return [{q:item.opts ? 'Shoot the correct answer under the EED test.' : 'Does heat of passion mitigate? If not, shoot the element that fails.', opts:item.opts || HOP_OPTS, ans:item.ans, why:item.why}];
+    if(n === 2) return [{q:item.opts ? 'Imperfect self-defense: shoot the correct answer.' : 'Does heat of passion mitigate? If not, shoot the test that fails.', opts:item.opts || HOP_OPTS, ans:item.ans, why:item.why}];
     return [{q:'Shoot the correct answer.', opts:item.opts, ans:item.ans, why:item.why}];
   }
   function shStart(n){
