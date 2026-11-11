@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CHAIN REACTION: Homicide &amp; Causation Arcade</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#07060d; --panel:#15111f;
+    --yellow:#ffd93b; --red:#ff4b5c; --cyan:#4bf3ff; --green:#39ff88; --magenta:#ff3ec8; --orange:#ff9a3b;
+    --text:#ecebff; --muted:#d9d4f7;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; padding:0; min-height:100%;
+    background:radial-gradient(ellipse at 50% -10%, #2a1a22 0%, #07060d 60%);
+    color:var(--text); font-family:'Press Start 2P', monospace; overflow-x:hidden;}
+  #crt-overlay{pointer-events:none; position:fixed; inset:0; z-index:50;
+    background:repeating-linear-gradient(rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.18) 3px, rgba(0,0,0,0) 4px);
+    mix-blend-mode:overlay;}
+  #cabinet{max-width:920px; margin:16px auto; padding:14px; border:4px solid #4a3340; border-radius:18px;
+    background:linear-gradient(180deg,#22161d,#0d0a12);
+    box-shadow:0 0 40px rgba(255,217,59,0.12), inset 0 0 30px rgba(0,0,0,0.6);}
+  #screenwrap{background:#000; border-radius:10px; border:3px solid #3a2733; padding:18px 18px 22px; min-height:600px; position:relative;}
+  #hud{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px 12px;
+    font-size:10px; padding:6px 4px 14px; letter-spacing:1px; border-bottom:2px dashed #4a3340; margin-bottom:14px;}
+  #hud .v{color:var(--cyan);}
+  #hud .lives{color:var(--red);}
+  .hud-btn{font-family:'Press Start 2P'; font-size:9px; background:#1d1520; border:2px solid var(--yellow); color:var(--yellow); padding:6px 8px; cursor:pointer; border-radius:4px;}
+  .hud-btn:hover{color:var(--cyan); border-color:var(--cyan);}
+  .hud-btn.teach{border-color:var(--magenta); color:var(--magenta);}
+  body.teacher .hud-btn.teach{background:var(--magenta); color:#1a0010;}
+  .tape{height:18px; margin:4px 0 12px; border-radius:2px;
+    background:repeating-linear-gradient(-45deg, var(--yellow) 0 18px, #111 18px 36px); opacity:.9;}
+  .screen{display:none; animation:fadein .2s ease;}
+  .screen.active{display:block;}
+  @keyframes fadein{from{opacity:0;} to{opacity:1;}}
+  h1{font-size:22px; text-align:center; color:var(--yellow); text-shadow:0 0 8px var(--yellow), 0 0 18px rgba(255,217,59,.5); margin:10px 0 6px; line-height:1.6;}
+  h2{font-size:14px; color:var(--cyan); text-shadow:0 0 6px var(--cyan); margin:0 0 12px; text-align:center; line-height:1.6;}
+  h3{font-size:11px; color:var(--yellow); margin:4px 0 10px; line-height:1.6;}
+  h4{font-size:10px; margin:0 0 6px; color:var(--cyan); line-height:1.5;}
+  p, li, .body-text{font-family:'Courier New', monospace; font-size:15px; line-height:1.6;}
+  .small{font-size:14px; color:var(--muted);}
+  .center{text-align:center;}
+  .blink{animation:blink 1s steps(2) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .arcade-btn{font-family:'Press Start 2P', monospace; background:linear-gradient(180deg,#30232e,#1b141c);
+    color:var(--yellow); border:2px solid var(--yellow); padding:12px 16px; font-size:10px; line-height:1.6; cursor:pointer; border-radius:6px;
+    box-shadow:0 4px 0 #6b5a1a, 0 0 12px rgba(255,217,59,0.25); margin:6px;}
+  .arcade-btn:hover{filter:brightness(1.25);}
+  .arcade-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #6b5a1a;}
+  .arcade-btn.green{color:var(--green); border-color:var(--green); box-shadow:0 4px 0 #1a6b3f, 0 0 12px rgba(57,255,136,.25);}
+  .arcade-btn.cyan{color:var(--cyan); border-color:var(--cyan); box-shadow:0 4px 0 #1a5f6b, 0 0 12px rgba(75,243,255,.25);}
+  .arcade-btn.red{color:var(--red); border-color:var(--red); box-shadow:0 4px 0 #6b1a22, 0 0 12px rgba(255,75,92,.25);}
+  .arcade-btn.magenta{color:var(--magenta); border-color:var(--magenta); box-shadow:0 4px 0 #6b1a52, 0 0 12px rgba(255,62,200,.25);}
+  .arcade-btn:disabled{opacity:.35; cursor:not-allowed;}
+  .panel{background:var(--panel); border:2px solid #3e2c38; border-radius:10px; padding:16px; margin:12px 0;}
+  .term-box{border-left:5px solid var(--cyan); padding:10px 14px; margin:10px 0; background:rgba(75,243,255,0.05);}
+  .term-box.red{border-color:var(--red); background:rgba(255,75,92,0.06);}
+  .term-box.red h4{color:var(--red);}
+  .term-box.yellow{border-color:var(--yellow); background:rgba(255,217,59,0.05);}
+  .term-box.yellow h4{color:var(--yellow);}
+  .term-box p{margin:4px 0; font-size:14px;}
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media (max-width:680px){ .grid-2{grid-template-columns:1fr;} }
+  .chip{display:inline-block; font-family:'Courier New',monospace; font-size:14px; background:#1d1520; border:2px solid #5a4258; color:var(--text);
+    padding:9px 14px; margin:5px; border-radius:20px; cursor:pointer; user-select:none;}
+  .chip:hover{border-color:var(--cyan);}
+  .chip.active{background:var(--yellow); color:#1a1400; border-color:var(--yellow); font-weight:bold;}
+  .controls-box{border:2px dashed var(--magenta); border-radius:8px; padding:10px 14px; margin:10px 0;}
+  .controls-box p{margin:4px 0; font-size:14px;}
+  .preview-list{max-height:240px; overflow-y:auto; border:1px solid #3a2733; border-radius:8px; padding:6px 10px 6px 30px; margin:0;}
+  .preview-list li{font-size:14px; margin:6px 0;}
+  .timerwrap{max-width:720px; margin:6px auto 10px; display:flex; align-items:center; gap:10px;}
+  .timerbar-outer{flex:1; height:14px; background:#1d1520; border:2px solid #5a4258; border-radius:8px; overflow:hidden;}
+  .timerbar-inner{height:100%; width:100%; background:var(--cyan); transition:width .08s linear;}
+  .timer-secs{font-size:10px; color:var(--cyan); min-width:64px; text-align:right;}
+  .topbar{max-width:720px; margin:0 auto 6px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; font-size:9px; color:var(--cyan); line-height:1.6;}
+  kbd{font-family:'Courier New'; background:#2a1f2a; border:1px solid #5a4258; border-radius:3px; padding:1px 5px; font-size:13px; color:var(--yellow);}
+
+  /* Level 1: catcher */
+  #fall-zone{position:relative; max-width:720px; height:400px; margin:0 auto; background:linear-gradient(180deg,#0a0710,#120c16);
+    border:3px solid #3e2c38; border-radius:8px; overflow:hidden; cursor:pointer;}
+  #fall-card{position:absolute; left:50%; top:0; transform:translateX(-50%); width:56%; max-width:420px;
+    background:var(--panel); border:2px solid var(--yellow); border-radius:10px; padding:12px 14px; z-index:2;
+    font-family:'Courier New',monospace; font-size:15px; line-height:1.45; text-align:center; overflow-wrap:break-word;
+    box-shadow:0 0 18px rgba(255,217,59,.2); transition:left .18s ease;}
+  #fall-card.ok{border-color:var(--green); box-shadow:0 0 22px rgba(57,255,136,.5);}
+  #fall-card.bad{border-color:var(--red); box-shadow:0 0 22px rgba(255,75,92,.5);}
+  .bin-label{cursor:pointer; position:absolute; bottom:0; width:42%; height:64px; display:flex; align-items:center; justify-content:center; text-align:center;
+    font-size:10px; line-height:1.6; border-top:4px solid; border-radius:10px 10px 0 0; z-index:1;}
+  #bin-left{left:2%; color:var(--green); border-color:var(--green); background:rgba(57,255,136,.08);}
+  #bin-right{right:2%; color:var(--red); border-color:var(--red); background:rgba(255,75,92,.08);}
+  #catcher{position:absolute; bottom:66px; width:36%; height:14px; border-radius:7px; background:var(--yellow); box-shadow:0 0 14px var(--yellow);
+    transition:left .15s ease; z-index:3;}
+  #catcher::after{content:'▼ ▼ ▼'; position:absolute; top:-2px; left:0; right:0; text-align:center; font-size:9px; color:#1a1400;}
+  .catch-btns{display:flex; justify-content:space-between; gap:10px; max-width:720px; margin:10px auto 0;}
+  .catch-btns .arcade-btn{flex:1; margin:0;}
+
+  /* Shooter */
+  .case-card{max-width:720px; margin:0 auto 8px; background:var(--panel); border:2px solid var(--cyan); border-radius:10px;
+    padding:12px 16px; font-family:'Courier New',monospace; font-size:15px; line-height:1.55;}
+  .case-q{max-width:720px; margin:0 auto 6px; font-family:'Courier New'; font-size:14px; color:var(--yellow); font-weight:bold;}
+  #shoot-canvas{display:block; width:100%; max-width:720px; margin:0 auto; background:#04030a; border:3px solid #3e2c38; border-radius:8px; cursor:crosshair; touch-action:none;}
+  #boss-hp-wrap{max-width:720px; margin:0 auto 6px; display:none; align-items:center; gap:10px; font-size:9px; color:var(--red);}
+  #boss-hp-wrap.show{display:flex;}
+  #boss-hp{flex:1; height:12px; border:2px solid var(--red); border-radius:6px; overflow:hidden; background:#1d1520;}
+  #boss-hp-fill{height:100%; width:100%; background:linear-gradient(90deg,var(--red),var(--orange)); transition:width .4s ease;}
+  .legend{max-width:720px; margin:8px auto 0; padding:0; list-style:none;}
+  .legend li{font-size:14px; margin:3px 0; padding:4px 8px; border-radius:6px;}
+  .legend li b{color:var(--yellow);}
+  .legend li.correct{background:rgba(57,255,136,.12); color:var(--green);}
+  .legend li.incorrect{background:rgba(255,75,92,.12); color:var(--red);}
+
+  /* Ladder */
+  #ladder{position:relative; max-width:520px; margin:6px auto 0; padding:6px 40px;}
+  #ladder::before, #ladder::after{content:''; position:absolute; top:0; bottom:0; width:8px; background:#6b4a2a; border-radius:4px;}
+  #ladder::before{left:22px;} #ladder::after{right:22px;}
+  .rung{position:relative; display:block; width:100%; margin:6px 0; padding:12px 14px 12px 64px; text-align:left; font-family:'Courier New'; font-size:15px; font-weight:bold;
+    color:var(--text); background:#2a1d14; border:3px solid #8a6238; border-radius:6px; cursor:pointer; z-index:1;}
+  .rung:hover:not(:disabled){border-color:var(--cyan);}
+  .rung .rk{color:var(--yellow); margin-right:8px;}
+  .rung.here{border-color:var(--yellow); box-shadow:0 0 14px rgba(255,217,59,.5);}
+  .rung.correct{border-color:var(--green); background:rgba(57,255,136,.15); color:var(--green);}
+  .rung.incorrect{border-color:var(--red); background:rgba(255,75,92,.15); color:var(--red);}
+  .rung:disabled{cursor:default;}
+  #climber{position:absolute; left:52px; width:30px; height:30px; z-index:2; transition:top .16s ease; pointer-events:none;
+    font-size:24px; line-height:30px; text-align:center; filter:drop-shadow(0 0 6px var(--yellow));}
+
+  .why-box{max-width:720px; margin:10px auto 0; font-family:'Courier New'; font-size:15px; line-height:1.6; padding:12px 14px; border-radius:8px; display:none;}
+  .why-box.ok{display:block; border:2px solid var(--green); background:rgba(57,255,136,.06);}
+  .why-box.bad{display:block; border:2px solid var(--red); background:rgba(255,75,92,.06);}
+  .why-box .verdict{font-family:'Press Start 2P'; font-size:10px; display:block; margin-bottom:8px; line-height:1.6;}
+  .why-box.ok .verdict{color:var(--green);} .why-box.bad .verdict{color:var(--red);}
+  .next-row{text-align:center; margin-top:10px; display:none;}
+  .teacher-only{display:none !important;}
+  body.teacher .teacher-only{display:inline-block !important;}
+  .streak{text-align:center; font-size:9px; color:var(--magenta); margin-top:8px; min-height:14px; line-height:1.6;}
+  .rank-row{display:flex; justify-content:space-between; gap:10px; max-width:600px; margin:5px auto; padding:8px 12px; border-radius:6px; background:rgba(255,255,255,0.03); font-family:'Courier New'; font-size:14px;}
+  .rank-row.achieved{background:rgba(57,255,136,0.14); border:1px solid var(--green); color:var(--green); font-weight:bold;}
+  .rank-meaning{font-family:'Courier New'; font-size:13px; color:var(--muted); max-width:600px; margin:0 auto 8px; padding:0 12px;}
+  .score-big{font-size:16px; color:var(--yellow); text-shadow:0 0 10px var(--yellow); text-align:center; margin:12px 0; line-height:1.6;}
+  .recap-item{margin:8px 0;}
+  .recap-item b{color:var(--cyan);}
+  .name-row{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; margin:10px 0;}
+  .name-row label{font-size:10px; color:var(--yellow);}
+  .name-row input, .overlay input{font-family:'Courier New'; font-size:16px; padding:9px 10px; border-radius:6px; border:2px solid var(--cyan); background:#0d0a12; color:var(--text); min-width:240px;}
+  .report-status{font-family:'Courier New'; font-size:13px; color:var(--cyan); text-align:center; min-height:18px;}
+  #floatingflash{position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); font-size:22px; font-family:'Press Start 2P';
+    pointer-events:none; opacity:0; z-index:70; text-shadow:0 0 14px currentColor; white-space:nowrap;}
+  #floatingflash.show{animation:flashpop 1s ease forwards;}
+  @keyframes flashpop{0%{opacity:0; transform:translate(-50%,-40%) scale(.6);} 20%{opacity:1; transform:translate(-50%,-50%) scale(1.1);} 70%{opacity:1;} 100%{opacity:0; transform:translate(-50%,-60%) scale(1);}}
+  .overlay{display:none; position:absolute; inset:0; z-index:60; background:rgba(4,3,8,0.93); align-items:flex-start; justify-content:center; padding:40px 20px;}
+  .overlay.show{display:flex;}
+  .overlay-inner{background:var(--panel); border:2px solid var(--cyan); border-radius:12px; padding:20px; max-width:600px; width:100%; box-shadow:0 0 30px rgba(75,243,255,0.25);}
+  .overlay-inner.mag{border-color:var(--magenta);}
+  .overlay-title{font-size:11px; color:var(--yellow); margin:0 0 10px; font-family:'Press Start 2P'; line-height:1.6;}
+  .pace-chip{display:block; width:100%; text-align:left; margin:6px 0;}
+  .err{color:var(--red); font-family:'Courier New'; font-size:14px; min-height:18px;}
+  .footer-note{font-family:'Courier New'; font-size:12px; color:#b7aed6; text-align:center; margin-top:18px;}
+</style>
+</head>
+<body>
+<div id="crt-overlay"></div>
+<div id="cabinet">
+  <div id="screenwrap">
+    <div id="hud">
+      <span>SCORE <span class="v" id="hud-score">0</span></span>
+      <span>LEVEL <span class="v" id="hud-level">-</span>/6</span>
+      <span class="lives">LIVES <span id="hud-lives">♥♥♥</span></span>
+      <span>STREAK <span class="v" id="hud-streak">0</span></span>
+      <button class="hud-btn" type="button" onclick="openPaceOverlay()" aria-label="Change reading speed">⏱ <span id="hud-pace-label">STANDARD</span></button>
+      <button class="hud-btn teach" type="button" onclick="openTeacher()" id="hud-teacher-btn">🔑 TEACHER</button>
+    </div>
+    <div id="floatingflash" aria-hidden="true"></div>
+
+    <!-- Pace overlay -->
+    <div class="overlay" id="pace-overlay" role="dialog" aria-modal="true" aria-labelledby="pace-overlay-title">
+      <div class="overlay-inner">
+        <p class="overlay-title" id="pace-overlay-title">READING SPEED</p>
+        <p class="body-text small">Every speed keeps a clock. Changing speed mid-question rescales the clock you're on, and the game pauses while this window is open.</p>
+        <button type="button" class="chip pace-chip" data-pace="standard" onclick="setPace('standard')">STANDARD: normal arcade timing</button>
+        <button type="button" class="chip pace-chip" data-pace="relaxed" onclick="setPace('relaxed')">RELAXED (+60%): 60% more time on every clock</button>
+        <button type="button" class="chip pace-chip" data-pace="slow" onclick="setPace('slow')">30% SPEED: every clock runs at 30% of standard speed</button>
+        <div class="center"><button type="button" class="arcade-btn cyan" onclick="closePaceOverlay()">▶ DONE</button></div>
+      </div>
+    </div>
+
+    <!-- Teacher overlay -->
+    <div class="overlay" id="teacher-overlay" role="dialog" aria-modal="true" aria-labelledby="teacher-overlay-title">
+      <div class="overlay-inner mag">
+        <p class="overlay-title" id="teacher-overlay-title">🔑 TEACHER MODE</p>
+        <div id="teacher-locked">
+          <p class="body-text small">Enter the teacher password to unlock level select, a Skip button on every question, and no life loss.</p>
+          <form onsubmit="submitTeacher(event)" class="center">
+            <label for="teacher-pw" class="body-text small">Password:</label><br>
+            <input type="password" id="teacher-pw" autocomplete="off">
+            <div class="err" id="teacher-err" aria-live="polite"></div>
+            <button type="submit" class="arcade-btn magenta">UNLOCK</button>
+            <button type="button" class="arcade-btn" onclick="closeTeacher()">CANCEL</button>
+          </form>
+        </div>
+        <div id="teacher-unlocked" style="display:none;">
+          <p class="body-text small">Teacher mode is <b>ON</b>. Lives are not lost, and every question has a ⏭ Skip button. Jump to any level:</p>
+          <div class="center">
+            <button type="button" class="arcade-btn cyan" onclick="jumpToLevel(1)">L1</button>
+            <button type="button" class="arcade-btn cyan" onclick="jumpToLevel(2)">L2</button>
+            <button type="button" class="arcade-btn cyan" onclick="jumpToLevel(3)">L3</button>
+            <button type="button" class="arcade-btn cyan" onclick="jumpToLevel(4)">L4</button>
+            <button type="button" class="arcade-btn cyan" onclick="jumpToLevel(5)">L5</button>
+            <button type="button" class="arcade-btn red" onclick="jumpToLevel(6)">BOSS</button>
+          </div>
+          <div class="center">
+            <button type="button" class="arcade-btn" onclick="teacherOff()">TURN TEACHER MODE OFF</button>
+            <button type="button" class="arcade-btn green" onclick="closeTeacher()">▶ RESUME</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TITLE -->
+    <section class="screen active" id="screen-title">
+      <div class="tape"></div>
+      <h1>CHAIN REACTION<br><span style="font-size:12px; color:var(--red); text-shadow:0 0 8px var(--red);">HOMICIDE &amp; CAUSATION ARCADE</span></h1>
+      <div class="tape"></div>
+      <p class="center body-text">Criminal Law · Prof. Cheryl Wattley<br>Three homicide levels, three causation levels, three lives, and one boss.</p>
+      <div class="center" style="margin-top:20px;">
+        <button type="button" class="arcade-btn green" onclick="goToBriefing()">▶ INSERT COIN</button>
+        <button type="button" class="arcade-btn magenta" onclick="openTeacher()">🔑 TEACHER MODE</button>
+      </div>
+      <p class="center blink" style="font-size:10px; color:var(--yellow); margin-top:18px;">PRESS INSERT COIN</p>
+      <p class="footer-note">Content drawn only from the Causation &amp; Homicide slides (Prof. Wattley) and the Themis Criminal Law outline.</p>
+    </section>
+
+    <!-- BRIEFING -->
+    <section class="screen" id="screen-briefing">
+      <h2>CASE BRIEFING</h2>
+      <div class="panel">
+        <h3>HOW THE GAME WORKS</h3>
+        <p class="body-text">The game has two halves of equal size. <b>Levels 1 to 3 cover homicide</b>: the forms of malice and the felony-murder rule, heat-of-passion mitigation, and grading. <b>Levels 4 to 6 cover causation</b>: actual cause, intervening causes, and a proximate-cause boss fight.</p>
+        <ul>
+          <li><b>Levels 1, 2, 5 and the Boss</b> are shooters: answer targets descend toward your ship, and you shoot the right one before they land.</li>
+          <li><b>Level 3</b> is a ladder climb: climb to the right homicide grade and lock it in.</li>
+          <li><b>Level 4</b> is a catcher game: steer the paddle so each falling fact card lands in the right bin.</li>
+          <li>No clock runs until you press <b>"I've read this: begin."</b> Each card or wave has its own clock after that.</li>
+          <li>A correct answer scores 100 points plus up to 50 for speed (Boss: 150 plus up to 50). A wrong answer or a timeout costs a life.</li>
+          <li>Every 5 correct in a row earns an <b>extra life</b>, and so does a flawless level. Lives bank up to 6.</li>
+          <li>After every answer you get an explanation and a <b>Next</b> button, so read at your own pace.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>PICK YOUR READING SPEED</h3>
+        <p class="body-text small">You can change this anytime with the ⏱ button in the top bar.</p>
+        <div class="center">
+          <button type="button" class="chip pace-chip" data-pace="standard" onclick="setPace('standard')">STANDARD: normal arcade timing</button>
+          <button type="button" class="chip pace-chip" data-pace="relaxed" onclick="setPace('relaxed')">RELAXED (+60%): 60% more time on every clock</button>
+          <button type="button" class="chip pace-chip" data-pace="slow" onclick="setPace('slow')">30% SPEED: every clock runs at 30% of standard speed</button>
+        </div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn green" onclick="startLevel(1)">▶ TO LEVEL 1</button></div>
+    </section>
+
+    <!-- HOMICIDE LEVELS -->
+    <section class="screen" id="screen-intro1">
+      <h2>LEVEL 1: MALICE INVADERS</h2>
+      <div class="panel">
+        <h3>THE MISSION</h3>
+        <p class="body-text">Common-law murder is an unlawful killing of another human being with <b>malice aforethought</b>. Five invaders descend in formation, one for each answer. Shoot the one that names the form of malice the facts show. If there's no malice at all, shoot E. A few cases test the <b>felony-murder rule</b> itself and carry their own targets.</p>
+        <div class="controls-box">
+          <p><b>CONTROLS:</b> Same as Level 2. <kbd>←</kbd>/<kbd>→</kbd> + <kbd>Space</kbd>, click a target, or press its letter.</p>
+        </div>
+        <h3>READ THE TARGETS FIRST</h3>
+        <ol class="preview-list" type="A">
+          <li><b>Intent to kill.</b> An inference of intent to kill may be made if a deadly weapon was used intentionally.</li>
+          <li><b>Serious bodily harm.</b> The defendant intended serious bodily injury, not death, and the victim died.</li>
+          <li><b>Depraved heart.</b> An unintentional killing from reckless indifference to an unjustifiably high risk to human life.</li>
+          <li><b>Felony murder.</b> An unintended killing during an inherently dangerous felony (BARRK).</li>
+          <li><b>Below malice.</b> An unintentional killing that is negligent or careless, not murder.</li>
+        </ol>
+        <div class="term-box red">
+          <h4>FELONY-MURDER RULE BASICS</h4>
+          <p>The felony must be inherently dangerous (BARRK: burglary, arson, rape, robbery, kidnapping) and independent of the killing. Under merger, an assault resulting in death is not felony murder, and aggravated battery can't be the predicate. The slides note the controversy: it imposes murder punishment without intent to kill, and it's defended as discouraging felony conduct.</p>
+        </div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn green" onclick="beginLevel(1)">▶ I'VE READ THIS: BEGIN <span class="gate-secs" data-level="1"></span></button></div>
+    </section>
+    <section class="screen" id="screen-intro2">
+      <h2>LEVEL 2: HEAT SEEKERS</h2>
+      <div class="panel">
+        <h3>THE MISSION</h3>
+        <p class="body-text">The slides distinguish two manslaughters: recklessly causing death, which the prosecutor charges, and <b>heat of passion</b>, a mitigation of murder that the defendant raises. Here you play defense counsel. For each killing, shoot <b>MITIGATED</b> if heat of passion works. If it fails, shoot the element that fails.</p>
+        <div class="grid-2">
+          <div class="term-box">
+            <h4>PROVOCATION</h4>
+            <p>The defendant was actually provoked by the victim, and a reasonable person would have been provoked. A serious battery, a threat of deadly force, or discovering a spouse's adultery qualifies. Words alone cannot be provocation (People v. Pouncey), though the slides ask about "informational words."</p>
+          </div>
+          <div class="term-box">
+            <h4>NO COOLING-DOWN PERIOD</h4>
+            <p>The defendant did not have enough time to cool down, and a reasonable person would not have cooled down.</p>
+          </div>
+          <div class="term-box">
+            <h4>LOSS OF SELF-CONTROL</h4>
+            <p>The defendant actually lost control, and a reasonable person would have. The provocation must cause the killing: no mitigation when the intent to kill was formed before the provocation.</p>
+          </div>
+          <div class="term-box yellow">
+            <h4>EXTREME EMOTIONAL DISTURBANCE</h4>
+            <p>State v. Elliott: broader than "heat of passion," with no cooling-down inquiry.</p>
+          </div>
+        </div>
+        <h3>READ THE TARGETS FIRST</h3>
+        <ol class="preview-list" type="A">
+          <li>MITIGATED: every element is met, so it's voluntary manslaughter.</li>
+          <li>NO PROVOCATION: no adequate provocation.</li>
+          <li>COOLED OFF: enough time passed for a reasonable person to cool off.</li>
+          <li>NOT IN PASSION: the defendant wasn't actually inflamed, or formed the intent to kill first.</li>
+        </ol>
+        <p class="body-text small">One case uses the extreme-emotional-disturbance test and has its own targets.</p>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn green" onclick="beginLevel(2)">▶ I'VE READ THIS: BEGIN <span class="gate-secs" data-level="2"></span></button></div>
+    </section>
+    <section class="screen" id="screen-intro3">
+      <h2>LEVEL 3: LADDER OF DEATH</h2>
+      <div class="panel">
+        <h3>THE MISSION</h3>
+        <p class="body-text">Your detective starts at the bottom of the homicide ladder. Climb to the <b>most appropriate charge</b> and lock it in before time runs out. Assume a statute defines first-degree murder as a willful, deliberate, and premeditated killing, or a killing during a BARRK felony.</p>
+        <div class="controls-box">
+          <p><b>CONTROLS:</b> <kbd>↑</kbd> / <kbd>↓</kbd> climb, <kbd>Space</kbd> or <kbd>Enter</kbd> locks in. With a mouse, click a rung to climb there and lock in.</p>
+        </div>
+        <div class="term-box">
+          <h4>TRADITIONAL GRADING (FROM THE SLIDES)</h4>
+          <p><b>First degree:</b> malice aforethought, premeditated, deliberate. Under the statute in State v. Thompson, premeditation means the intent or knowledge precedes the killing by any length of time to permit reflection, but not the instant effect of a sudden quarrel or heat of passion.</p>
+          <p><b>Second degree:</b> malice aforethought only, including depraved heart.</p>
+          <p><b>Voluntary manslaughter:</b> passion killing.</p>
+          <p><b>Involuntary manslaughter:</b> gross negligence (criminal negligence); under the MPC, recklessness. Also a killing during a malum in se misdemeanor.</p>
+          <p><b>Not criminal homicide:</b> no living human being was killed by the defendant.</p>
+        </div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn green" onclick="beginLevel(3)">▶ I'VE READ THIS: BEGIN <span class="gate-secs" data-level="3"></span></button></div>
+    </section>
+    <!-- CAUSATION LEVELS -->
+    <section class="screen" id="screen-intro4">
+      <h2>LEVEL 4: BUT-FOR BLASTER</h2>
+      <div class="panel">
+        <h3>THE MISSION</h3>
+        <p class="body-text">Fact cards drop from the sky. Slide the yellow paddle under the correct bin before the card lands. The only question is <b>actual cause</b> (cause-in-fact). Proximate cause comes in Level 5, so a card can be an actual cause even if it would fail the fairness test later. If the card lands with the paddle in the middle, it falls between the bins and counts as a miss.</p>
+        <div class="controls-box">
+          <p><b>CONTROLS:</b> <kbd>←</kbd> / <kbd>→</kbd> move the paddle. <kbd>↓</kbd> or <kbd>Space</kbd> slams the card down now for a bigger speed bonus. With a mouse, click the left or right bin to move there and slam.</p>
+        </div>
+        <div class="grid-2">
+          <div class="term-box">
+            <h4>◀ LEFT BIN: ACTUAL CAUSE</h4>
+            <p>But for the defendant's act, the victim would not have died. Setting in motion the forces that kill counts, and so does an act that accelerates death.</p>
+          </div>
+          <div class="term-box red">
+            <h4>RIGHT BIN ▶: NOT AN ACTUAL CAUSE</h4>
+            <p>The death would have happened the same way without the act, or an independent cause killed the victim before the defendant's act could.</p>
+          </div>
+          <div class="term-box yellow">
+            <h4>SUBSTANTIAL FACTOR</h4>
+            <p>With multiple causes, the defendant's act must be a substantial factor. Simultaneous independent acts can each be an actual cause even if the victim would have died from either one.</p>
+          </div>
+          <div class="term-box yellow">
+            <h4>PREEXISTING CONDITION</h4>
+            <p>A victim's preexisting condition that contributes to the death doesn't supplant the defendant's conduct as an actual cause.</p>
+          </div>
+        </div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn green" onclick="beginLevel(4)">▶ I'VE READ THIS: BEGIN <span class="gate-secs" data-level="4"></span></button></div>
+    </section>
+    <section class="screen" id="screen-fall">
+      <h2>LEVEL 4: BUT-FOR BLASTER</h2>
+      <div class="topbar"><span id="fall-progress">CARD 1/12</span><span>←/→ MOVE · ↓ SLAM · OR CLICK A BIN</span></div>
+      <div class="timerwrap"><div class="timerbar-outer"><div class="timerbar-inner"></div></div><span class="timer-secs"></span></div>
+      <div id="fall-zone">
+        <div id="fall-card"></div>
+        <div id="catcher"></div>
+        <div class="bin-label" id="bin-left">◀ ACTUAL<br>CAUSE</div>
+        <div class="bin-label" id="bin-right">NOT AN ACTUAL<br>CAUSE ▶</div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn magenta teacher-only" id="fall-skip" onclick="l1Resolve('__skip')">⏭ SKIP: REVEAL ANSWER</button></div>
+      <div class="why-box" id="fall-why" aria-live="polite"></div>
+      <div class="next-row" id="fall-next-row"><button type="button" class="arcade-btn cyan" id="fall-next" onclick="l1Next()">NEXT CARD ▶</button></div>
+      <div class="streak" id="fall-streak"></div>
+    </section>
+    <section class="screen" id="screen-intro5">
+      <h2>LEVEL 5: CHAIN GUN</h2>
+      <div class="panel">
+        <h3>THE MISSION</h3>
+        <p class="body-text">Every case has an <b>intervening cause</b>: an actual cause that occurs after the defendant's voluntary act. Each case is two waves of targets. In wave 1, shoot <b>DEPENDENT</b> or <b>INDEPENDENT</b>. In wave 2, shoot <b>CHAIN HOLDS</b> (D is the proximate cause) or <b>CHAIN BREAKS</b> (the intervening cause relieves D).</p>
+        <div class="controls-box">
+          <p><b>CONTROLS:</b> <kbd>←</kbd> / <kbd>→</kbd> move your ship, <kbd>Space</kbd> fires. With a mouse, click a target and your ship flies under it and fires. Shortcut: press the target's letter (<kbd>A</kbd>, <kbd>B</kbd>...) to auto-aim and fire.</p>
+        </div>
+        <div class="grid-2">
+          <div class="term-box">
+            <h4>DEPENDENT INTERVENING CAUSE</h4>
+            <p>It arises as a result of the first cause and is responsive to the defendant's conduct, e.g., the victim's own reaction or treatment by a doctor. The defendant stays liable unless the response was "abnormal" (not just unforeseeable, but unusual or extraordinary in hindsight).</p>
+          </div>
+          <div class="term-box red">
+            <h4>INDEPENDENT INTERVENING CAUSE</h4>
+            <p>Not foreseeable and not intended, e.g., the conduct or gross negligence of a third party, or a force of nature outside the defendant's control. It relieves the defendant when it is independent and unforeseeable.</p>
+          </div>
+        </div>
+        <div class="term-box yellow">
+          <h4>QUESTIONS TO ASK (FROM THE SLIDES)</h4>
+          <p>What was the nature of the intervening cause? Was it foreseeable? Who had control over it? How much harm did it contribute? Are there policy arguments, i.e., fairness and justice? Even with an intervening act, the defendant stays responsible unless that act was so out of the ordinary that holding the defendant responsible would be unjust.</p>
+        </div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn green" onclick="beginLevel(5)">▶ I'VE READ THIS: BEGIN <span class="gate-secs" data-level="5"></span></button></div>
+    </section>
+    <section class="screen" id="screen-intro6">
+      <h2 style="color:var(--red); text-shadow:0 0 8px var(--red);">BOSS: THE LEGAL CAUSE MOTHERSHIP</h2>
+      <div class="panel">
+        <h3>THE MISSION</h3>
+        <p class="body-text">The Mothership hovers at the top of the screen, launching four answer targets at a time. Shoot the right one to knock down its shields. Nine correct hits destroy it. This round is all <b>proximate (legal) cause</b>, including how causation works in felony murder. Correct hits are worth more, and a miss still costs a life.</p>
+        <div class="grid-2">
+          <div class="term-box red">
+            <h4>PROXIMATE CAUSE</h4>
+            <p>The prosecution must prove both actual and proximate causation. A death is foreseeable if it is the natural and probable result of the defendant's conduct. Even with an intervening act, the defendant stays responsible unless that act was so out of the ordinary that holding the defendant responsible would be unjust.</p>
+          </div>
+          <div class="term-box red">
+            <h4>THE MPC VERSION</h4>
+            <p>When the injury is generally of the type the defendant intended, proximate cause exists if the injury is not too remote or accidental in its occurrence to have a just bearing on the actor's liability.</p>
+          </div>
+          <div class="term-box">
+            <h4>FELONY MURDER: WHO CAUSED THE DEATH?</h4>
+            <p>Majority rule: felon or agent. Minority rule: proximate cause. Under Redline, a felon generally isn't guilty of felony murder when a victim or officer kills a cofelon. The felony continues during flight; consider time, distance, and the causal relationship.</p>
+          </div>
+          <div class="term-box">
+            <h4>LIMITS ON CAUSATION</h4>
+            <p>Common law: death has to occur within a year and a day of the injury. And providing a person the means to commit suicide generally doesn't make the provider guilty of murder, because suicide is not homicide.</p>
+          </div>
+        </div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn red" onclick="beginLevel(6)">▶ I'VE READ THIS: FIGHT THE BOSS <span class="gate-secs" data-level="6"></span></button></div>
+    </section>
+
+    <!-- SHOOTER PLAY (Levels 2,3,4,6) -->
+    <section class="screen" id="screen-shoot">
+      <h2 id="shoot-title">CHAIN GUN</h2>
+      <div class="topbar"><span id="shoot-progress">CASE 1/8</span><span id="shoot-step"></span><span>←/→ MOVE · SPACE FIRE · CLICK OR LETTER = AUTO-AIM</span></div>
+      <div class="case-card" id="shoot-text"></div>
+      <div class="case-q" id="shoot-q"></div>
+      <div class="timerwrap"><div class="timerbar-outer"><div class="timerbar-inner"></div></div><span class="timer-secs"></span></div>
+      <div id="boss-hp-wrap"><span>MOTHERSHIP SHIELDS</span><div id="boss-hp"><div id="boss-hp-fill"></div></div></div>
+      <canvas id="shoot-canvas" width="720" height="380" aria-label="Shooter play area. Use the letter keys or the answer list below to fire at a target."></canvas>
+      <ul class="legend" id="shoot-legend"></ul>
+      <div class="center"><button type="button" class="arcade-btn magenta teacher-only" id="shoot-skip" onclick="shResolve('__skip')">⏭ SKIP: REVEAL ANSWER</button></div>
+      <div class="why-box" id="shoot-why" aria-live="polite"></div>
+      <div class="next-row" id="shoot-next-row"><button type="button" class="arcade-btn cyan" id="shoot-next" onclick="shNext()">NEXT ▶</button></div>
+      <div class="streak" id="shoot-streak"></div>
+    </section>
+
+    <!-- LADDER PLAY (Level 5) -->
+    <section class="screen" id="screen-ladder">
+      <h2>LEVEL 3: LADDER OF DEATH</h2>
+      <div class="topbar"><span id="ladder-progress">CASE 1/11</span><span>↑/↓ CLIMB · SPACE LOCK IN · CLICK A RUNG</span></div>
+      <div class="case-card" id="ladder-text"></div>
+      <div class="timerwrap"><div class="timerbar-outer"><div class="timerbar-inner"></div></div><span class="timer-secs"></span></div>
+      <div id="ladder"><div id="climber">🕵️</div></div>
+      <div class="center">
+        <button type="button" class="arcade-btn green" id="ladder-lock" onclick="ladderLock()">🔒 LOCK IN</button>
+        <button type="button" class="arcade-btn magenta teacher-only" id="ladder-skip" onclick="ladderResolve('__skip')">⏭ SKIP: REVEAL ANSWER</button>
+      </div>
+      <div class="why-box" id="ladder-why" aria-live="polite"></div>
+      <div class="next-row" id="ladder-next-row"><button type="button" class="arcade-btn cyan" id="ladder-next" onclick="ladderNext()">NEXT CASE ▶</button></div>
+      <div class="streak" id="ladder-streak"></div>
+    </section>
+
+    <!-- LEVEL DONE -->
+    <section class="screen" id="screen-done">
+      <h2 id="done-title">LEVEL CLEAR</h2>
+      <div class="score-big" id="done-score"></div>
+      <div class="panel">
+        <h3>CONCEPT RECAP</h3>
+        <div id="done-recap" class="body-text"></div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn green" id="done-next" onclick="afterDone()">CONTINUE ▶</button></div>
+    </section>
+
+    <!-- END -->
+    <section class="screen" id="screen-end">
+      <h2 style="color:var(--green); text-shadow:0 0 8px var(--green);">CASE CLOSED</h2>
+      <div class="score-big" id="end-score"></div>
+      <div class="panel">
+        <h3>RANKS</h3>
+        <div id="end-ranks"></div>
+      </div>
+      <div class="panel">
+        <h3>WHAT YOU COVERED</h3>
+        <div id="end-recap" class="body-text"></div>
+      </div>
+      <div class="panel">
+        <h3>DOWNLOAD YOUR COMPLETION REPORT</h3>
+        <p class="body-text small center">Enter your name, then save the report as a PDF to submit.</p>
+        <div class="name-row"><label for="end-name">NAME:</label><input type="text" id="end-name" autocomplete="name" maxlength="80"></div>
+        <div class="center">
+          <button type="button" class="arcade-btn green" onclick="saveReportPdf('end')">📄 SAVE AS PDF</button>
+          <button type="button" class="arcade-btn cyan" onclick="downloadReport('end')">⬇ DOWNLOAD (HTML)</button>
+        </div>
+        <div class="report-status" id="end-status" aria-live="polite"></div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn" onclick="playAgain()">↻ PLAY AGAIN</button></div>
+    </section>
+
+    <!-- GAME OVER -->
+    <section class="screen" id="screen-gameover">
+      <h2 style="font-size:24px; color:var(--red); text-shadow:0 0 10px var(--red), 0 0 22px rgba(255,75,92,.6);">GAME OVER</h2>
+      <p class="center body-text" id="gameover-level"></p>
+      <div class="score-big" id="gameover-score"></div>
+      <div class="panel">
+        <h3>RANKS</h3>
+        <div id="gameover-ranks"></div>
+      </div>
+      <div class="panel">
+        <h3>DOWNLOAD YOUR COMPLETION REPORT</h3>
+        <p class="body-text small center">Enter your name, then save the report as a PDF to submit.</p>
+        <div class="name-row"><label for="go-name">NAME:</label><input type="text" id="go-name" autocomplete="name" maxlength="80"></div>
+        <div class="center">
+          <button type="button" class="arcade-btn green" onclick="saveReportPdf('go')">📄 SAVE AS PDF</button>
+          <button type="button" class="arcade-btn cyan" onclick="downloadReport('go')">⬇ DOWNLOAD (HTML)</button>
+        </div>
+        <div class="report-status" id="go-status" aria-live="polite"></div>
+      </div>
+      <div class="center"><button type="button" class="arcade-btn green" onclick="playAgain()">↻ PLAY AGAIN</button></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Teacher mode password. CLIENT-SIDE CHECK ONLY: anyone who opens the page source can read it.
+  // It deters casual clicking, not a determined student. Change it here before distributing.
+  var TEACHER_PASSWORD = 'CAUSATION';
+
+  var GAME_TITLE = 'Chain Reaction: Homicide & Causation Arcade';
+  var GAME_SHORT = 'Chain Reaction';
+  var START_LIVES = 3, MAX_LIVES = 6, STREAK_FOR_LIFE = 5;
+
+  var state;
+  function freshState(){
+    return { score:0, lives:START_LIVES, level:0, streak:0, bestStreak:0, bonusStreak:0,
+      levelMistakes:0, teacherUsed:false, pendingGameOver:false, finished:false, stats:{} };
+  }
+  state = freshState();
+  var teacher = false;
+
+  function $(id){ return document.getElementById(id); }
+  function showScreen(id){
+    var all = document.querySelectorAll('.screen');
+    for(var i=0;i<all.length;i++){ all[i].classList.remove('active'); }
+    $(id).classList.add('active');
+    try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){}
+  }
+  function activeScreen(){ var a = document.querySelector('.screen.active'); return a ? a.id : ''; }
+  function updateHud(){
+    $('hud-score').textContent = state.score.toLocaleString();
+    $('hud-level').textContent = state.level > 0 ? state.level : '-';
+    var slots = Math.max(START_LIVES, state.lives), h = '';
+    for(var i=0;i<slots;i++){ h += (i < state.lives) ? '♥' : '♡'; }
+    $('hud-lives').textContent = h;
+    $('hud-streak').textContent = state.streak;
+  }
+  function addScore(n){ state.score = Math.max(0, state.score + n); updateHud(); }
+  function shuffle(arr){ var a = arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  // ---------- Sound ----------
+  var actx = null;
+  function beep(freq, dur, type, vol){
+    try{
+      if(!actx){ actx = new (window.AudioContext || window.webkitAudioContext)(); }
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || 'square'; o.frequency.value = freq; g.gain.value = vol || 0.05;
+      o.connect(g); g.connect(actx.destination); o.start();
+      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + (dur||0.12));
+      o.stop(actx.currentTime + (dur||0.12) + 0.02);
+    }catch(e){ /* audio not available */ }
+  }
+  function playJingle(notes, dur, gapMs, type){ notes.forEach(function(f, i){ setTimeout(function(){ beep(f, dur, type); }, i*gapMs); }); }
+  function sfxCorrect(){ beep(880,0.09,'square'); setTimeout(function(){ beep(1320,0.12,'square'); },70); }
+  function sfxWrong(){ beep(180,0.22,'sawtooth'); }
+  function sfxClick(){ beep(440,0.05,'triangle'); }
+  function sfxLaser(){ beep(1200,0.06,'square',0.03); setTimeout(function(){ beep(700,0.05,'square',0.03); },40); }
+  function sfxBoom(){ beep(120,0.25,'sawtooth',0.06); }
+  function sfxStep(){ beep(520,0.04,'triangle',0.04); }
+  function playStartJingle(){ playJingle([523.25,659.25,783.99,1046.50], 0.14, 110, 'square'); }
+  function playVictoryJingle(){ playJingle([523.25,523.25,523.25,659.25,783.99,1046.50,1318.51], 0.15, 105, 'square'); }
+  function playGameOverJingle(){ playJingle([392.00,349.23,293.66,233.08,196.00], 0.32, 190, 'sawtooth'); }
+  function playExtraLifeJingle(){ playJingle([659.25,830.61,987.77,1318.51], 0.11, 90, 'square'); }
+
+  function flashText(text, color){
+    var el = $('floatingflash'); el.textContent = text; el.style.color = color || 'var(--yellow)';
+    el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  }
+
+  // ---------- Pace ----------
+  var PACE_MODE = 'standard';
+  function paceMult(){ return PACE_MODE === 'relaxed' ? 1.6 : (PACE_MODE === 'slow' ? (1/0.3) : 1); }
+  var PACE_LABELS = {standard:'STANDARD', relaxed:'RELAXED (+60%)', slow:'30% SPEED'};
+  window.setPace = function(mode, silent){
+    PACE_MODE = mode; if(!silent) sfxClick();
+    var chips = document.querySelectorAll('.pace-chip');
+    for(var i=0;i<chips.length;i++){ chips[i].classList.toggle('active', chips[i].getAttribute('data-pace') === mode); }
+    $('hud-pace-label').textContent = PACE_LABELS[mode];
+    if(T.active){ // rescale the clock in flight: keep the fraction used, recompute the total
+      var frac = T.elapsed / T.total;
+      T.total = T.base * paceMult();
+      T.elapsed = frac * T.total;
+    }
+    updateGateLabels();
+  };
+  function anyOverlayOpen(){ return $('pace-overlay').classList.contains('show') || $('teacher-overlay').classList.contains('show'); }
+  window.openPaceOverlay = function(){ sfxClick(); $('pace-overlay').classList.add('show'); };
+  window.closePaceOverlay = function(){ sfxClick(); $('pace-overlay').classList.remove('show'); };
+
+  // ---------- Shared timer (pauses while an overlay is open) ----------
+  var T = { active:false, base:0, total:0, elapsed:0, last:0, id:null, onTick:null, onExpire:null };
+  function startTimer(baseMs, onTick, onExpire){
+    stopTimer();
+    T.active = true; T.base = baseMs; T.total = baseMs * paceMult(); T.elapsed = 0; T.last = performance.now();
+    T.onTick = onTick; T.onExpire = onExpire;
+    T.id = setInterval(tickTimer, 50); tickTimer();
+  }
+  function tickTimer(){
+    var now = performance.now();
+    if(!anyOverlayOpen()){ T.elapsed += now - T.last; }
+    T.last = now;
+    var frac = Math.min(1, T.elapsed / T.total);
+    var bars = document.querySelectorAll('.screen.active .timerbar-inner');
+    for(var i=0;i<bars.length;i++){
+      bars[i].style.width = ((1-frac)*100) + '%';
+      bars[i].style.background = frac > 0.75 ? 'var(--red)' : (frac > 0.5 ? 'var(--yellow)' : 'var(--cyan)');
+    }
+    var secs = document.querySelectorAll('.screen.active .timer-secs');
+    var left = Math.max(0, Math.ceil((T.total - T.elapsed)/1000));
+    for(var k=0;k<secs.length;k++){ secs[k].textContent = left + ' SEC'; }
+    if(T.onTick){ T.onTick(frac); }
+    if(frac >= 1){ var cb = T.onExpire; stopTimer(); if(cb){ cb(); } }
+  }
+  function stopTimer(){ if(T.id){ clearInterval(T.id); } T.id = null; T.active = false; }
+  function timerFrac(){ return T.total ? Math.min(1, T.elapsed / T.total) : 0; }
+  function fracRemaining(){ return T.total ? Math.max(0, 1 - T.elapsed/T.total) : 0; }
+
+  // =========================================================
+  // CONTENT (only from the Causation & Homicide slides and the Themis outline)
+  // =========================================================
+  var CATCH_DATA = [
+    {text:"D puts rat poison in V's coffee. V immediately becomes sick, is rushed to the hospital, and dies.", cat:'yes',
+     why:"The slide hypo with no intervening cause. Without the act there is no injury, so D is the but-for cause and no further analysis is needed."},
+    {text:"D stabs V repeatedly in bed, thinking V is asleep. V actually died of a massive heart attack an hour earlier.", cat:'no',
+     why:"The outline's example. An independent cause killed V before D's act could, so there is no homicide of V. D may be charged with attempted murder."},
+    {text:"D and E, acting independently, shoot V at the same moment. Either shot alone would have killed V.", cat:'yes',
+     why:"Each shot is considered an actual cause. With simultaneous independent acts, each can be an actual cause even though V would have died from either one (substantial factor)."},
+    {text:"D clubs V, intending to kill. The blow alone wouldn't have killed V, but V's heart condition makes it fatal.", cat:'yes',
+     why:"A victim's preexisting condition that contributes to the death doesn't supplant the defendant's conduct as the actual cause."},
+    {text:"D sets up a mechanical device in his barn. Later, while D is away, it goes off and kills a person.", cat:'yes',
+     why:"The outline's example: D set in motion the forces that led to the death, so D caused it."},
+    {text:"D shoots at V and misses entirely. Months later, V dies in an unrelated car accident.", cat:'no',
+     why:"V would have died in the accident whether or not D ever fired, so this is attempted murder but not homicide."},
+    {text:"D slips V a slow-acting poison. Before it can take effect, E, acting on his own, shoots V dead.", cat:'no',
+     why:"An independent cause (E's shot) killed V before D's act could. Like the heart-attack stabbing, D is liable for attempt, not homicide."},
+    {text:"V is terminally ill. D stabs V, and the wound kills V weeks earlier than the illness would have.", cat:'yes',
+     why:"Per the outline, an act that accelerates death is a legal cause of that death. It's an actual cause, too: without the stabbing, V wouldn't have died then."},
+    {text:"D lies to V about the forecast so V will go hiking. On the trail, a lightning strike kills V.", cat:'yes',
+     why:"This one's a trick: but for the lie, V wouldn't have been on the trail, so actual cause is met. Proximate cause is the real problem, since forces of nature outside D's control are generally not foreseeable. You'll see that in Level 5."},
+    {text:"D steals V's car. Three days later, V dies at home of a heart condition with no link to the theft.", cat:'no',
+     why:"Nothing ties the theft to the death. V would have died the same way without D's act."},
+    {text:"B shouts at a carriage driver, waving his hands wildly. The horse runs away, the carriage topples, and the tourist riding in it is killed.", cat:'yes',
+     why:"The Central Park slide hypo. But for B's outburst, the horse doesn't run. Whether B is also the legal cause is a separate, proximate-cause question."}
+  ];
+
+  var DEP_OPTS = [{k:'dep', s:'DEPENDENT', label:'Dependent: arose in response to D’s conduct'}, {k:'ind', s:'INDEPENDENT', label:'Independent: not produced by D’s conduct'}];
+  var CHAIN_OPTS = [{k:'holds', s:'CHAIN HOLDS', label:'Chain holds: D is the proximate cause'}, {k:'breaks', s:'CHAIN BREAKS', label:'Chain breaks: the intervening cause relieves D'}];
+  var CHAIN_DATA = [
+    {text:"D stabs V. At the hospital, V's doctor treats the wound negligently, and V dies.",
+     a1:'dep', w1:"The treatment happens only because of the stabbing, so it's responsive to D's conduct.",
+     a2:'holds', w2:"Per the outline, negligence by the doctor treating the victim is generally foreseeable. It doesn't relieve D."},
+    {text:"D stabs V. The treating doctor's conduct is so bizarre that, looking back, it is unusual and extraordinary, not merely careless. V dies from that treatment.",
+     a1:'dep', w1:"It's still a response to D's conduct: V was in the doctor's care because of the stab wound.",
+     a2:'breaks', w2:"A dependent act relieves D when it is “abnormal,” meaning not just unforeseeable but unusual or extraordinary in hindsight."},
+    {text:"D ties V to a tree in an open field and leaves. A lightning strike kills V.",
+     a1:'ind', w1:"D didn't produce the lightning. It's a force of nature that happened to coincide with D's act.",
+     a2:'breaks', w2:"The outline's example: actions by a force of nature not within the defendant's control are generally not foreseeable."},
+    {text:"D poisons V's coffee. On the way to the hospital, a terrible crash closes the freeway and adds 30 minutes. The doctor testifies V would have survived if she had arrived sooner.",
+     a1:'ind', w1:"The crash had nothing to do with D's poisoning. It wasn't a response to D's conduct.",
+     a2:'holds', w2:"This is the slide's open question: was the delay “highly extraordinary”? Under the outline, D stays responsible unless the intervening act was so out of the ordinary that holding D would be unjust. The poison did the killing, and nobody controlled the crash in a way that shifts blame, so the stronger answer is that the chain holds. Be ready to argue the other side."},
+    {text:"D brutally injures V. Weeks later, to escape the pain from those injuries, V takes her own life.",
+     a1:'dep', w1:"V's act was a response to the injuries D inflicted.",
+     a2:'holds', w2:"The outline's example: a victim's suicide to escape the pain caused by the defendant's injuries is typically foreseeable."},
+    {text:"D shoots V in the leg. While V recovers in the hospital, X, who has nothing to do with D, sneaks in and kills V.",
+     a1:'ind', w1:"X acted on his own. The killing wasn't produced by or responsive to D's shooting.",
+     a2:'breaks', w2:"A third party's act that is independent of the defendant's conduct and unforeseeable relieves D of liability for the death."},
+    {text:"D seriously wounds V. V refuses the medical treatment that would have saved her and dies of the wound.",
+     a1:'dep', w1:"V's decision was a reaction to the wound D inflicted.",
+     a2:'holds', w2:"Per the outline, actions by the victim are typically foreseeable, so they don't break the chain."},
+    {text:"On Halloween, A, who often does chores for a frail, seriously ill elderly woman, walks to her dark front door in a zombie costume. She sees him on her Ring camera, becomes terrified, and has a fatal heart attack.",
+     a1:'dep', w1:"Her fright and heart attack were a direct response to A's approach.",
+     a2:'holds', w2:"The slide hypo. A knew how frail she was, which makes her fatal reaction hard to call unforeseeable, and her condition doesn't break the chain. Causation is the easier part here; A's mental state decides whether this is any homicide offense."}
+  ];
+
+  var MALICE_OPTS = [
+    {k:'itk', s:'INTENT TO KILL', label:'Intent to kill'},
+    {k:'sbh', s:'SERIOUS BODILY HARM', label:'Intent to inflict serious bodily harm'},
+    {k:'dh',  s:'DEPRAVED HEART', label:'Depraved heart (reckless indifference)'},
+    {k:'fm',  s:'FELONY MURDER', label:'Felony murder'},
+    {k:'none',s:'BELOW MALICE', label:'Below malice: not murder'}
+  ];
+  var MALICE_DATA = [
+    {text:"A intends to kill B, aims a gun at B, and shoots. B dies.", ans:'itk',
+     why:"The outline's example. An inference of intent to kill may also be made from the intentional use of a deadly weapon."},
+    {text:"A intentionally hits B over the head with a baseball bat, meaning to hurt B but not kill him. B later dies of a skull fracture.", ans:'sbh',
+     why:"The outline's example: A is guilty of murder because of the intent to inflict serious bodily harm, even without intent to kill."},
+    {text:"As a joke, A stands on a highway overpass and drops a bowling ball into oncoming traffic. It kills B, a passing motorist.", ans:'dh',
+     why:"The outline's example of depraved heart: no intent to kill B, but reckless indifference to an unjustifiably high risk to human life."},
+    {text:"While committing a burglary, A accidentally shoots and kills the homeowner.", ans:'fm',
+     why:"The outline's example: burglary is a BARRK felony, so the unintended killing can be charged as felony murder."},
+    {text:"Jake, an experienced marksman, fires his rifle repeatedly into the air above a crowded festival, knowing the bullets must come down somewhere. One kills an attendee.", ans:'dh',
+     why:"Slide Hypothetical #2. Jake didn't target anyone, but his conduct showed extreme recklessness and conscious disregard for human life. That's depraved-heart murder."},
+    {text:"A parent, under a duty to care for a sick child, fails to get the child medical care. The child dies.", ans:'none',
+     why:"The outline gives this as an example of criminal negligence, which supports involuntary manslaughter, not malice."},
+    {text:"A plans the killing of B for weeks, then poisons B's dinner. B dies.", ans:'itk',
+     why:"Planning a poisoning shows intent to kill. The outline also lists poisoning among the egregious acts that can make a murder first degree."},
+    {text:"A waits in the getaway car while his partner robs a store. Inside, the partner kills the clerk.", ans:'fm',
+     why:"Robbery is a BARRK felony, and cofelons (including accessories) are vicariously liable for a death that's a foreseeable consequence of the felony."},
+    {text:"Maria drives 90 mph through a residential neighborhood at 3:00 PM on a school day, weaving and running stop signs. She has done this many times before without incident. This time she kills a child in a crosswalk.", ans:'dh',
+     why:"Slide Hypothetical #3. Her lack of intent and past luck don't matter. Driving like this shows reckless indifference to human life, which is depraved heart."},
+    {text:"A briefly glances away from the road while driving at the speed limit and strikes a pedestrian, who dies.", ans:'none',
+     why:"Momentary carelessness isn't reckless indifference, and the outline says criminal negligence requires more than the ordinary negligence of tort law. Nothing here shows malice."},
+    {text:"D points a gun at A, intending to kill A, but misses and kills B, who was standing nearby.", ans:'itk',
+     why:"Transferred intent (a “bad aim” case). D's intent to kill A transfers to B, so D is guilty of B's murder and the attempted murder of A."},
+    {text:"During an argument, A fires a gun at B's head from close range. B dies. A insists he never meant for B to die.", ans:'itk',
+     why:"An inference of intent to kill may be made from the intentional use of a deadly weapon, and from the natural and probable consequences of voluntary acts."},
+    {text:"Which felonies make up BARRK, the traditional inherently dangerous felonies for felony murder?",
+     opts:[{k:'a',s:'Burglary, Arson, Rape, Robbery, Kidnapping',label:'Burglary, arson, rape, robbery, kidnapping'},{k:'b',s:'Battery, Assault, Rape, Robbery, Kidnapping',label:'Battery, assault, rape, robbery, kidnapping'},{k:'c',s:'Burglary, Arson, Racketeering, Robbery, Kidnapping',label:'Burglary, arson, racketeering, robbery, kidnapping'},{k:'d',s:'Bribery, Arson, Rape, Robbery, Kidnapping',label:'Bribery, arson, rape, robbery, kidnapping'}],
+     ans:'a', why:"That's BARRK. Per the outline, neither murder nor manslaughter can be the basis for a felony-murder charge."},
+    {text:"D commits an aggravated battery on V, who dies. Can the prosecutor use the aggravated battery as the predicate for felony murder?",
+     opts:[{k:'a',s:'YES: IT IS DANGEROUS',label:'Yes: it is a dangerous felony'},{k:'b',s:'NO: MERGER',label:'No: it merges because it isn’t independent of the killing'},{k:'c',s:'ONLY IF D INTENDED DEATH',label:'Only if D intended to kill'},{k:'d',s:'ONLY IN MINORITY STATES',label:'Only in proximate-cause jurisdictions'}],
+     ans:'b', why:"Merger. The underlying felony must be independent of the killing itself, and the outline says aggravated battery can't be the basis for felony murder. The slides: an assault resulting in death is not felony murder."},
+    {text:"Hines v. State (slides): a convicted felon in possession of a firearm goes turkey hunting, and a person is killed. The predicate felony is possession of a firearm by a convicted felon. What question decides felony murder?",
+     opts:[{k:'a',s:'IS IT ON THE BARRK LIST?',label:'Whether the felony is on the BARRK list'},{k:'b',s:'FORESEEABLE RISK OF DEATH?',label:'Whether the circumstances created a foreseeable risk of death'},{k:'c',s:'DID HE INTEND TO KILL?',label:'Whether the felon intended to kill'},{k:'d',s:'DID THE VICTIM CONSENT?',label:'Whether the victim consented to the risk'}],
+     ans:'b', why:"The question the slide highlights from Hines: did the circumstances create a foreseeable risk of death?"},
+    {text:"How does MPC § 210.2(1)(b) deal with killings during robbery, rape, arson, burglary, kidnapping, or felonious escape?",
+     opts:[{k:'a',s:'SAME AS COMMON LAW',label:'It adopts the common-law felony-murder rule unchanged'},{k:'b',s:'IGNORES FELONIES',label:'It gives felonies no role in murder'},{k:'c',s:'PRESUMES EXTREME RECKLESSNESS',label:'Recklessness and extreme indifference are presumed'},{k:'d',s:'ALWAYS FIRST DEGREE',label:'Every such death is first-degree murder'}],
+     ans:'c', why:"From the slide: murder includes killings committed recklessly with extreme indifference to human life, and that recklessness and indifference are presumed if the actor is engaged in one of the listed felonies."}
+  ];
+
+  var HOP_OPTS = [
+    {k:'mit', s:'MITIGATED', label:'Mitigated: all elements met, so voluntary manslaughter'},
+    {k:'prov', s:'NO PROVOCATION', label:'Fails: no adequate provocation'},
+    {k:'cool', s:'COOLED OFF', label:'Fails: enough time to cool off'},
+    {k:'actual', s:'NOT IN PASSION', label:'Fails: not actually inflamed, or intent to kill came first'}
+  ];
+  var HEAT_DATA = [
+    {text:"D comes home and discovers his spouse in the act of adultery. In a rage, D immediately kills the lover.", ans:'mit',
+     why:"The outline lists discovery of adultery by a spouse as adequate provocation, and there was no time to cool off."},
+    {text:"A co-worker yells within inches of D's face that he knows D stole from their employer, that he'll get D fired, and that he'll get the promotion D wanted. D kills him.", ans:'prov',
+     why:"Words alone cannot constitute provocation (People v. Pouncey). Taunts and threats to report don't qualify."},
+    {text:"V threatens D with deadly force. Enraged, D immediately kills V.", ans:'mit',
+     why:"The outline lists a threat of deadly force as adequate provocation, and D acted immediately."},
+    {text:"D learns of his spouse's affair. Two weeks later, after thinking it over, D drives to the lover's house and kills him.", ans:'cool',
+     why:"If there was enough time for a reasonable person to cool off, murder is not mitigated. Two weeks is plenty."},
+    {text:"D had decided long ago to kill V. One day V gives D a minor shove, and D carries out his plan.", ans:'actual',
+     why:"There must be a causal connection between the provocation, the passion, and the killing. When the intent to kill was formed before the provocation, there's no mitigation."},
+    {text:"V commits a serious battery on D. Moments later, still in a rage, D kills V.", ans:'mit',
+     why:"A serious battery is adequate provocation under the outline, and D had no time to cool off."},
+    {text:"Police arrest D unlawfully. In the heat of passion, D intentionally kills an officer while resisting.", ans:'mit',
+     why:"The outline: an intentional killing while resisting arrest is generally murder, but it can be manslaughter if the arrest was unlawful and D acted in the heat of passion."},
+    {text:"Provoked by V's serious battery, D, in a rage, shoots at V but accidentally kills a bystander.", ans:'mit',
+     why:"Transferred provocation. If D accidentally kills the wrong person, D is guilty of voluntary manslaughter if that would have been the crime had D killed the provoker. Intentionally killing a known innocent bystander would stay murder."},
+    {text:"Extreme emotional disturbance jurisdiction. D's emotional disturbance has built up over a long time, and D kills V well after the last upsetting event. Can D seek mitigation?",
+     opts:[
+       {k:'eed', s:'YES: EED', label:'Possibly: EED is broader, with no cooling-down inquiry'},
+       {k:'cool2', s:'NO: COOLED OFF', label:'No: too much time has passed to cool off'},
+       {k:'words', s:'NO: WORDS ALONE', label:'No: there was no physical provocation'},
+       {k:'never', s:'NO: NEVER', label:'No: only heat of passion can mitigate murder'}],
+     ans:'eed',
+     why:"State v. Elliott (from the slides): extreme emotional disturbance is broader than heat of passion and has no cooling-down inquiry, so the time gap doesn't end the analysis."}
+  ];
+
+  var GRADE_OPTS = [
+    {k:'m1', label:'First-degree murder'},
+    {k:'m2', label:'Second-degree murder'},
+    {k:'vm', label:'Voluntary manslaughter'},
+    {k:'im', label:'Involuntary manslaughter'},
+    {k:'nh', label:'Not criminal homicide'}
+  ];
+  var LADDER_DATA = [
+    {text:"D and V, co-workers, argue. V, inches away, yells that D stole money and taunts him about a promotion. D keeps looking at a heavy paperweight and realizes he could easily grab it. As V yells “I'm turning you in” and turns to walk away, D grabs it and hits V in the head, killing him.", ans:'m1',
+     why:"Slide Hypothetical #1, answer D: he had time to decide to commit murder and reflect on it. Under the Thompson statute, any length of time that permits reflection is enough. Words alone don't create heat of passion."},
+    {text:"Jake fires his rifle repeatedly into the air above a crowded festival “to celebrate.” A bullet kills an attendee. Jake says he didn't intend to kill anyone.", ans:'m2',
+     why:"Slide Hypothetical #2: depraved-heart murder. The slides place depraved heart under second degree (malice aforethought only)."},
+    {text:"Maria drives 90 mph through a residential neighborhood on a school afternoon, running stop signs, and kills a child. She says, “Oh my God, I never meant for this to happen.”", ans:'m2',
+     why:"Slide Hypothetical #3, answer B: second-degree, depraved-heart murder. Using a car doesn't limit it to vehicular manslaughter, and a child victim doesn't make it first degree."},
+    {text:"D, 6'2\" and 220 pounds and a former college baseball player, argues with his 5'6\" neighbor. Muttering and cursing, he walks over and swings a bat with considerable force at the neighbor's head, killing him. D says he only meant to scare him.", ans:'m2',
+     why:"Slide hypo, answer B. A single blow out of an argument isn't strong evidence of premeditation, the argument isn't heat-of-passion provocation, and the outline's bat example shows that striking the head with intent to cause serious harm is malice. Second-degree murder."},
+    {text:"D carefully plans and carries out the killing of his terminally ill spouse, at the spouse's request, to end the spouse's suffering.", ans:'m1',
+     why:"A mercy killing (the slides pair this with Gilbert v. State and mandatory minimum sentences). Per the outline, consent is not a defense to homicide, and the planning shows premeditation and deliberation."},
+    {text:"D drives 45 in a 35 zone in a heavy snowstorm, late for his daughter's party. He accelerates through a yellow light, skids on ice, and kills a pedestrian in the crosswalk. He knew the roads were icy but thought he was a good enough driver.", ans:'im',
+     why:"Adapted from the slide hypo (where the pedestrian was injured). He was aware of the risk and consciously disregarded it, which is recklessness: MPC involuntary manslaughter. The outline notes reckless driving alone generally isn't depraved heart unless it's extreme, e.g., combined with intoxication."},
+    {text:"Parents, under a duty to care for their sick child, fail to provide medical care. The child dies.", ans:'im',
+     why:"The outline's example of criminal negligence, which supports involuntary manslaughter."},
+    {text:"D discovers his spouse in the act of adultery and immediately kills the lover in a rage.", ans:'vm',
+     why:"An intentional killing in the heat of passion after adequate provocation, with no time to cool off."},
+    {text:"D stabs V in bed. V had already died of a heart attack an hour earlier.", ans:'nh',
+     why:"A living human being must die for a homicide, and a person can't be killed twice. D may be charged with attempted murder."},
+    {text:"D commits a battery, a malum in se misdemeanor, by shoving V. V falls and dies. D never intended serious harm.", ans:'im',
+     why:"The outline's misdemeanor-manslaughter rule: a killing during a malum in se misdemeanor (e.g., battery) is involuntary manslaughter."},
+    {text:"During a bank robbery, D's gun accidentally discharges and kills a teller.", ans:'m1',
+     why:"Under the assumed statute, a killing during a BARRK felony (robbery) is first-degree felony murder. No intent to kill or premeditation is needed."}
+  ];
+
+  var BOSS_DATA = [
+    {text:"To prove a homicide, what must the prosecution show about causation?",
+     opts:[{k:'a',s:'BOTH ACTUAL AND PROXIMATE',label:'Both actual cause and proximate cause'},{k:'b',s:'ACTUAL CAUSE ONLY',label:'Actual (but-for) cause only'},{k:'c',s:'PROXIMATE CAUSE ONLY',label:'Proximate cause only'},{k:'d',s:'NOTHING IF MALICE PROVEN',label:'Nothing, if malice is proven'}],
+     ans:'a', why:"Per the outline, the prosecution must prove both actual and proximate causation."},
+    {text:"For proximate cause, when is a death caused by the defendant's conduct deemed foreseeable?",
+     opts:[{k:'a',s:'D PREDICTED IT',label:'When the defendant actually predicted it'},{k:'b',s:'NATURAL AND PROBABLE RESULT',label:'When death is the natural and probable result of the conduct'},{k:'c',s:'D INTENDED IT',label:'Only when the defendant intended it'},{k:'d',s:'ANY BUT-FOR CAUSE',label:'Whenever the act is a but-for cause'}],
+     ans:'b', why:"The outline: a death is deemed foreseeable if death is the natural and probable result of the conduct. Its exam note adds that this standard is commonly tested with the felony-murder rule."},
+    {text:"Under the MPC, when the injury is generally of the type the defendant intended, proximate causation exists if the injury is...",
+     opts:[{k:'a',s:'THE SOLE CAUSE OF DEATH',label:'The sole cause of death'},{k:'b',s:'CERTAIN TO OCCUR',label:'Certain to occur'},{k:'c',s:'NOT TOO REMOTE OR ACCIDENTAL',label:'Not too remote or accidental in its occurrence to have a just bearing on the actor’s liability'},{k:'d',s:'WITHIN A YEAR AND A DAY',label:'Within a year and a day of the act'}],
+     ans:'c', why:"The MPC test quoted in the outline: the injury must not be too remote or accidental in its occurrence to have a just bearing on the actor's liability or the gravity of the offense."},
+    {text:"During a robbery, a police officer shoots at the fleeing robbers and kills a bystander. The jurisdiction follows the majority rule. Are the robbers guilty of felony murder?",
+     opts:[{k:'a',s:'YES: DIRECT RESULT',label:'Yes: the death was a direct consequence of the felony'},{k:'b',s:'YES: ANY DEATH',label:'Yes: any death during a felony is felony murder'},{k:'c',s:'NO: NOT THEIR AGENT',label:'No: the officer is not the felons’ agent'},{k:'d',s:'NO: COPS NEVER COUNT',label:'No: killings by police are never homicide'}],
+     ans:'c', why:"Under the agency theory (the majority rule: felon or agent), the felon isn't liable for a bystander killed by a police officer or felony victim, because neither is the felon's agent."},
+    {text:"Same facts, but the jurisdiction follows the minority rule. Now what?",
+     opts:[{k:'a',s:'LIABLE: DIRECT CONSEQUENCE',label:'The robbers may be liable because the death was a direct consequence of the felony'},{k:'b',s:'NOT LIABLE: OFFICER FIRED',label:'Still not liable, because the officer fired'},{k:'c',s:'ONLY THE OFFICER',label:'Only the officer can be charged'},{k:'d',s:'ONLY THE ARMED ROBBER',label:'Only the robber who carried a gun is liable'}],
+     ans:'a', why:"Under the proximate-cause theory (minority rule), liability for the bystander's death may attach because the death is a direct consequence of the felony."},
+    {text:"During a robbery, the store owner, acting in self-defense, shoots and kills one robber. Is the other robber guilty of felony murder for his partner's death?",
+     opts:[{k:'a',s:'YES: DURING FELONY',label:'Yes: the partner died during the felony'},{k:'b',s:'NO: REDLINE',label:'Generally no: the killing is a justifiable homicide (Redline)'},{k:'c',s:'MANSLAUGHTER ONLY',label:'Only manslaughter'},{k:'d',s:'ONLY IF HE WAS ARMED',label:'Only if he was armed'}],
+     ans:'b', why:"Under the Redline doctrine (in the outline), a felon generally isn't guilty of felony murder when a victim or officer, acting in self-defense or to prevent escape, kills the cofelon. That killing is justifiable homicide."},
+    {text:"Robbers flee the scene. Minutes later, still in flight, they cause a crash that kills a pedestrian. Is the death part of the felony?",
+     opts:[{k:'a',s:'NO: FELONY ENDED',label:'No: the robbery ended when they left'},{k:'b',s:'YES: FLIGHT COUNTS',label:'Yes: the felony continues during flight'},{k:'c',s:'VEHICULAR ONLY',label:'No: only vehicular manslaughter'},{k:'d',s:'ONLY IF INTENTIONAL',label:'Only if they meant to hit the pedestrian'}],
+     ans:'b', why:"The slides ask when the felony ends, looking at time, distance, and the causal relationship, and include deaths during flight. The outline makes it a defense only when death occurs after the felony and the ensuing flight."},
+    {text:"James Brady was shot in March 1981 and died in August 2014. What did the common-law year-and-a-day rule say about that gap?",
+     opts:[{k:'a',s:'NOTHING: POISON ONLY',label:'Nothing: it applied only to poisonings'},{k:'b',s:'NOT THE PROXIMATE CAUSE',label:'The act is conclusively presumed not to be the proximate cause'},{k:'c',s:'PRESUMED FIRST DEGREE',label:'The death is presumed first-degree murder'},{k:'d',s:'NEW LIMITATIONS PERIOD',label:'The statute of limitations restarts'}],
+     ans:'b', why:"Common law: death has to occur within a year and a day of the injury. Otherwise the act is conclusively presumed not to be the proximate cause. The outline notes most states have abolished or extended the rule."},
+    {text:"D gives V, who wants to die, the pills V uses to take her own life. Is D guilty of murder as an accomplice?",
+     opts:[{k:'a',s:'YES: BUT-FOR CAUSE',label:'Yes: D is a but-for cause of the death'},{k:'b',s:'GENERALLY NO',label:'Generally no: suicide is not homicide, though D may be guilty of a lesser crime'},{k:'c',s:'YES: CONSENT NO DEFENSE',label:'Yes: consent is not a defense to homicide'},{k:'d',s:'ONLY IF V WAS ILL',label:'Only if V was terminally ill'}],
+     ans:'b', why:"The outline: providing a person with the means to commit suicide generally does not make the provider guilty of murder as an accomplice, because suicide is not homicide. The provider may be guilty of a lesser crime, e.g., assisting a suicide."}
+  ];
+
+  // ---------- Level definitions ----------
+  var LV = {
+    1:{name:'Malice Invaders', label:'Level 1 (Malice Invaders)', sec:25, pts:100,
+       recap:"Malice aforethought can be shown by intent to kill, intent to inflict serious bodily harm, depraved-heart reckless indifference, or felony murder. Intent may be inferred from the intentional use of a deadly weapon and from the natural and probable consequences of voluntary acts. Criminal negligence is not malice. Felony murder requires an inherently dangerous felony (BARRK) that is independent of the killing (merger); Hines asks whether the circumstances created a foreseeable risk of death, and the MPC presumes extreme-indifference recklessness for listed felonies.",
+       terms:"malice aforethought; intent to kill; serious bodily harm; depraved heart; felony murder; BARRK; merger; Hines v. State; MPC § 210.2(1)(b); transferred intent; criminal negligence"},
+    2:{name:'Heat Seekers', label:'Level 2 (Heat Seekers)', sec:30, pts:100,
+       recap:"Heat of passion mitigates murder to voluntary manslaughter when there is provocation, no cooling-down period, and a loss of self-control, each judged both by what the defendant actually experienced and by the reasonable person. Words alone don't count. The provocation must cause the killing. Extreme emotional disturbance is broader and has no cooling-down inquiry.",
+       terms:"heat of passion; adequate provocation; cooling off; reasonable person; People v. Pouncey; transferred provocation; unlawful arrest; State v. Elliott"},
+    3:{name:'Ladder of Death', label:'Level 3 (Ladder of Death)', sec:40, pts:100,
+       recap:"Traditional grading runs from first-degree murder (premeditated and deliberate, or felony murder by statute) through second-degree murder (malice only, including depraved heart), voluntary manslaughter (passion killing), and involuntary manslaughter (criminal negligence, MPC recklessness, or misdemeanor-manslaughter). Premeditation can be brief but requires time to reflect. Consent is no defense.",
+       terms:"premeditation and deliberation (State v. Thompson); mercy killing (Gilbert v. State); depraved heart; recklessness vs. criminal negligence; misdemeanor-manslaughter"},
+    4:{name:'But-For Blaster', label:'Level 4 (But-For Blaster)', sec:18, pts:100,
+       recap:"Actual cause asks whether the victim would have died but for the defendant's act. Setting in motion the forces that kill counts. With multiple causes, the act must be a substantial factor. A preexisting condition doesn't supplant the defendant's act, accelerating death counts, and an independent cause that kills first means no homicide (attempt only).",
+       terms:"but-for cause; actual cause (cause-in-fact); substantial factor; preexisting condition; acceleration of death; independent cause"},
+    5:{name:'Chain Gun', label:'Level 5 (Chain Gun)', sec:25, pts:100,
+       recap:"An intervening cause is an actual cause that occurs after the defendant's voluntary act. A dependent cause arises from and responds to the defendant's conduct and relieves the defendant only if abnormal. An independent cause relieves the defendant if it is unforeseeable. Ask about the cause's nature, foreseeability, control, contribution to the harm, and fairness.",
+       terms:"intervening cause; dependent vs. independent; foreseeability; abnormal; force of nature; fairness and justice"},
+    6:{name:'Legal Cause Mothership', label:'the Boss Round (Legal Cause Mothership)', sec:35, pts:150,
+       recap:"The prosecution must prove both actual and proximate cause. A death is foreseeable if it is the natural and probable result of the conduct, and the MPC asks whether the result is too remote or accidental to bear justly on liability. In felony murder, the majority (agency) rule covers killings by a felon or agent, the minority uses proximate cause, Redline excludes justified killings of cofelons, and the felony continues through flight. The year-and-a-day rule cut off late deaths, and supplying the means for a suicide generally isn't murder.",
+       terms:"actual and proximate cause; natural and probable result; MPC remote-or-accidental test; agency vs. proximate-cause rule; Commonwealth v. Redline; flight; year-and-a-day rule; assisted suicide"}
+  };
+  function levelItemCount(n){
+    return {1:MALICE_DATA.length, 2:HEAT_DATA.length, 3:LADDER_DATA.length, 4:CATCH_DATA.length, 5:CHAIN_DATA.length*2, 6:BOSS_DATA.length}[n];
+  }
+  function l1BaseMs(idx){ return Math.max(14000, 18000 - idx*400); }
+  function updateGateLabels(){
+    var spans = document.querySelectorAll('.gate-secs');
+    for(var i=0;i<spans.length;i++){
+      var n = parseInt(spans[i].getAttribute('data-level'),10);
+      if(n===4){ spans[i].textContent = '(CARDS FALL IN ' + Math.round(18*paceMult()) + '\u2192' + Math.round(14*paceMult()) + ' SEC)'; }
+      else { spans[i].textContent = '(' + Math.round(LV[n].sec*paceMult()) + ' SEC PER ' + (n===3 ? 'CLIMB' : 'WAVE') + ')'; }
+    }
+  }
+
+  // ---------- Ranks ----------
+  var RANKS = [
+    {label:"CORONER'S CLERK", min:0, max:4499, meaning:"You can find the body. The chain from act to death, and what that death is worth, still needs work."},
+    {label:'BUT-FOR BRAWLER', min:4500, max:6999, meaning:"Solid on actual cause, still trading punches with proximate cause and grading."},
+    {label:'PROXIMATE PROSECUTOR', min:7000, max:8999, meaning:"You can defend the causal chain and pick the right charge."},
+    {label:'YEAR-AND-A-DAY LEGEND', min:9000, max:null, meaning:"Named for the common-law rule that death has to occur within a year and a day of the injury. Your grip on this material should outlast that window."}
+  ];
+  function rankFor(score){ for(var i=RANKS.length-1;i>=0;i--){ if(score >= RANKS[i].min) return RANKS[i]; } return RANKS[0]; }
+  function fmt(n){ return n.toLocaleString(); }
+  function rangeStr(r){ return r.max === null ? (fmt(r.min) + '+ pts') : (fmt(r.min) + '–' + fmt(r.max) + ' pts'); }
+  function renderRankTable(score){
+    var mine = rankFor(score);
+    var html = '<p class="body-text small center" style="margin-top:0;">Your score: <b>' + fmt(score) + ' pts</b>. The ranges below are the totals needed for each rank; yours is highlighted.</p>';
+    RANKS.forEach(function(r){
+      var a = (r === mine);
+      html += '<div class="rank-row' + (a ? ' achieved' : '') + '"><span>' + (a ? '▶ YOUR RANK: ' : '') + esc(r.label) + '</span><span>' + rangeStr(r) + '</span></div>' +
+              '<div class="rank-meaning">' + esc(r.meaning) + '</div>';
+    });
+    return html;
+  }
+
+  // ---------- Scoring ----------
+  function initLevelStats(n){ state.stats[n] = {correct:0, answered:0, skipped:0, total:levelItemCount(n)}; state.levelMistakes = 0; state.bonusStreak = 0; }
+  function grantLife(reason){
+    if(state.lives < MAX_LIVES){ state.lives++; updateHud(); playExtraLifeJingle(); flashText(reason + ' +1 LIFE', '#39ff88'); }
+    else { addScore(250); sfxCorrect(); flashText(reason + ' +250', '#39ff88'); }
+  }
+  function recordResult(correct, skipped, bonusFrac){
+    var st = state.stats[state.level];
+    if(skipped){ st.skipped++; return 0; }
+    st.answered++;
+    if(correct){
+      st.correct++;
+      var pts = LV[state.level].pts + Math.round(50 * (bonusFrac === undefined ? fracRemaining() : bonusFrac));
+      addScore(pts); sfxCorrect();
+      state.streak++; state.bonusStreak++;
+      if(state.streak > state.bestStreak) state.bestStreak = state.streak;
+      if(state.bonusStreak >= STREAK_FOR_LIFE){ state.bonusStreak = 0; setTimeout(function(){ grantLife('HOT STREAK'); }, 350); }
+      else { flashText('+' + pts, '#39ff88'); }
+      updateHud();
+      return pts;
+    }
+    state.streak = 0; state.bonusStreak = 0; state.levelMistakes++;
+    sfxWrong();
+    if(!teacher){
+      state.lives--; updateHud();
+      if(state.lives <= 0){ state.pendingGameOver = true; }
+      flashText('-1 LIFE', '#ff4b5c');
+    } else { updateHud(); flashText('MISS (TEACHER)', '#ff3ec8'); }
+    return 0;
+  }
+  function streakText(){ return 'STREAK ' + state.streak + ' · ' + (STREAK_FOR_LIFE - state.bonusStreak) + ' MORE IN A ROW FOR AN EXTRA LIFE'; }
+  function verdictHtml(correct, skipped, timedOut, pts, ansLabel, why){
+    var v = skipped ? 'ANSWER REVEALED' : correct ? ('CORRECT +' + pts) : (timedOut ? "TIME'S UP" : 'NOT QUITE');
+    return '<span class="verdict">' + v + '</span>' + (correct ? '' : '<b>Answer: ' + esc(ansLabel) + '.</b> ') + why;
+  }
+
+  // ---------- Flow ----------
+  window.goToBriefing = function(){ sfxClick(); playStartJingle(); showScreen('screen-briefing'); };
+  window.startLevel = function(n){
+    sfxClick(); stopAll(); state.level = n; initLevelStats(n); updateHud(); updateGateLabels();
+    showScreen('screen-intro' + n);
+  };
+  window.beginLevel = function(n){
+    sfxClick();
+    if(n === 4){ l1Start(); } else if(n === 3){ ladderStart(); } else { shStart(n); }
+  };
+  function stopAll(){ stopTimer(); SH.running = false; }
+
+  // =========================================================
+  // LEVEL 1: CATCHER
+  // =========================================================
+  var l1Order = [], l1Idx = 0, l1Resolved = true, l1Pos = 'mid', l1Slamming = false, l1SlamFrac = 0;
+  function l1Start(){ l1Order = shuffle(CATCH_DATA); l1Idx = -1; showScreen('screen-fall'); l1Next(); }
+  function l1PlaceCatcher(){
+    var c = $('catcher');
+    c.style.left = l1Pos === 'left' ? '5%' : (l1Pos === 'right' ? '59%' : '32%');
+    var card = $('fall-card');
+    if(!l1Resolved){ card.style.left = l1Pos === 'left' ? '30%' : (l1Pos === 'right' ? '70%' : '50%'); }
+  }
+  function l1Move(dir){
+    if(l1Resolved) return;
+    if(dir === 'left'){ l1Pos = (l1Pos === 'right') ? 'mid' : 'left'; }
+    else { l1Pos = (l1Pos === 'left') ? 'mid' : 'right'; }
+    sfxStep(); l1PlaceCatcher();
+  }
+  function l1CardTop(frac){
+    var zone = $('fall-zone'), c = $('fall-card');
+    var maxTop = Math.max(0, zone.clientHeight - 66 - 14 - c.offsetHeight);
+    c.style.top = (frac * maxTop) + 'px';
+  }
+  window.l1Next = function(){
+    if(state.pendingGameOver){ triggerGameOver(); return; }
+    l1Idx++;
+    if(l1Idx >= l1Order.length){ finishLevel(4); return; }
+    var item = l1Order[l1Idx];
+    var card = $('fall-card');
+    card.className = ''; card.innerHTML = item.text; card.style.top = '0px';
+    l1Pos = 'mid'; l1Resolved = false; l1Slamming = false;
+    l1PlaceCatcher();
+    $('fall-progress').textContent = 'CARD ' + (l1Idx+1) + '/' + l1Order.length;
+    $('fall-why').className = 'why-box'; $('fall-why').innerHTML = '';
+    $('fall-next-row').style.display = 'none';
+    $('fall-skip').disabled = false;
+    $('fall-streak').textContent = streakText();
+    $('fall-zone').scrollIntoView({behavior:'smooth', block:'center'});
+    startTimer(l1BaseMs(l1Idx), function(frac){ if(!l1Slamming) l1CardTop(frac); }, function(){ l1Resolve(l1Pos); });
+  };
+  window.l1Slam = function(side){
+    if(l1Resolved || l1Slamming) return;
+    if(side){ l1Pos = side; l1PlaceCatcher(); }
+    l1Slamming = true; l1SlamFrac = fracRemaining(); stopTimer();
+    beep(300,0.15,'square');
+    var start = parseFloat($('fall-card').style.top) || 0, t0 = performance.now();
+    var zone = $('fall-zone'), c = $('fall-card');
+    var end = Math.max(0, zone.clientHeight - 66 - 14 - c.offsetHeight);
+    (function anim(now){
+      var p = Math.min(1, (now - t0)/220);
+      c.style.top = (start + (end-start)*p) + 'px';
+      if(p < 1){ requestAnimationFrame(anim); } else { l1Resolve(l1Pos, l1SlamFrac); }
+    })(t0);
+  };
+  window.l1Resolve = function(pos, bonusFrac){
+    if(l1Resolved) return;
+    l1Resolved = true; stopTimer();
+    var item = l1Order[l1Idx];
+    var skipped = pos === '__skip';
+    var choice = pos === 'left' ? 'yes' : (pos === 'right' ? 'no' : null);
+    var correct = !skipped && choice === item.cat;
+    var pts = recordResult(correct, skipped, bonusFrac === undefined ? 0 : bonusFrac);
+    $('fall-skip').disabled = true;
+    $('fall-card').className = (correct || skipped) ? 'ok' : 'bad';
+    if(!correct && !skipped) sfxBoom();
+    var ansLabel = item.cat === 'yes' ? 'Actual cause' : 'Not an actual cause';
+    var w = $('fall-why');
+    w.className = 'why-box ' + ((correct || skipped) ? 'ok' : 'bad');
+    var v = skipped ? 'ANSWER REVEALED' : correct ? ('CAUGHT IT! +' + pts) : (choice === null ? 'FELL BETWEEN THE BINS' : 'WRONG BIN');
+    w.innerHTML = '<span class="verdict">' + v + '</span>' + (correct ? '' : '<b>Answer: ' + ansLabel + '.</b> ') + item.why;
+    var last = l1Idx >= l1Order.length - 1;
+    $('fall-next').textContent = state.pendingGameOver ? 'GAME OVER ▶' : (last ? 'FINISH LEVEL ▶' : 'NEXT CARD ▶');
+    $('fall-next-row').style.display = 'block';
+    $('fall-streak').textContent = streakText();
+    w.scrollIntoView({behavior:'smooth', block:'nearest'});
+  };
+  $('fall-zone').addEventListener('click', function(e){
+    if(l1Resolved) return;
+    var r = this.getBoundingClientRect();
+    l1Slam((e.clientX - r.left) < r.width/2 ? 'left' : 'right');
+  });
+
+  // =========================================================
+  // SHOOTER (Levels 2, 3, 4, Boss)
+  // =========================================================
+  var SH = { running:false, resolved:true, ship:{x:360, tx:null}, bullet:null, targets:[], fx:[], stars:[], keys:{}, autoFire:null,
+    items:[], ci:0, si:0, step:null, bossHits:0, t0:0, theme:null, ansKey:null, chosen:null };
+  var THEMES = {
+    1:{title:'LEVEL 1: MALICE INVADERS', color:'#39ff88', shape:'invader', sway:0.55},
+    2:{title:'LEVEL 2: HEAT SEEKERS', color:'#ff9a3b', shape:'flame', sway:0.6},
+    5:{title:'LEVEL 5: CHAIN GUN', color:'#4bf3ff', shape:'link', sway:0.45},
+    6:{title:'BOSS: THE LEGAL CAUSE MOTHERSHIP', color:'#ff4b5c', shape:'invader', sway:0.75, boss:true}
+  };
+  var cv = $('shoot-canvas'), cx = cv.getContext('2d');
+  var W = cv.width, H = cv.height, GROUND = H - 46;
+  for(var si0=0; si0<70; si0++){ SH.stars.push({x:Math.random()*W, y:Math.random()*H, s:Math.random()*1.6+0.3, v:Math.random()*0.4+0.1}); }
+
+  function shSteps(n, item){
+    if(n === 5){ return [
+      {q:'WAVE 1 OF 2: Is the intervening cause dependent or independent?', opts:DEP_OPTS, ans:item.a1, why:item.w1},
+      {q:'WAVE 2 OF 2: Does the causal chain hold or break?', opts:CHAIN_OPTS, ans:item.a2, why:item.w2}]; }
+    if(n === 1) return [{q:item.opts ? 'Felony-murder rule: shoot the correct answer.' : 'Shoot the form of malice aforethought these facts show.', opts:item.opts || MALICE_OPTS, ans:item.ans, why:item.why}];
+    if(n === 2) return [{q:item.opts ? 'Shoot the correct answer under the EED test.' : 'Does heat of passion mitigate? If not, shoot the element that fails.', opts:item.opts || HOP_OPTS, ans:item.ans, why:item.why}];
+    return [{q:'Shoot the correct answer.', opts:item.opts, ans:item.ans, why:item.why}];
+  }
+  function shStart(n){
+    var data = {1:MALICE_DATA, 2:HEAT_DATA, 5:CHAIN_DATA, 6:BOSS_DATA}[n];
+    SH.items = (n === 6) ? data.slice() : shuffle(data);
+    SH.ci = 0; SH.si = -1; SH.theme = THEMES[n]; SH.bossHits = 0;
+    $('shoot-title').textContent = SH.theme.title;
+    $('shoot-title').style.color = SH.theme.boss ? 'var(--red)' : '';
+    $('boss-hp-wrap').classList.toggle('show', !!SH.theme.boss);
+    $('boss-hp-fill').style.width = '100%';
+    showScreen('screen-shoot');
+    SH.running = true; SH.loopId = (SH.loopId||0) + 1; var lid = SH.loopId; requestAnimationFrame(function(){ shLoop(lid); });
+    shNextStep();
+  }
+  function wrapLines(text, maxW){
+    var words = text.split(' '), lines = [], cur = '';
+    words.forEach(function(w){
+      var test = cur ? cur + ' ' + w : w;
+      if(cx.measureText(test).width > maxW && cur){ lines.push(cur); cur = w; } else { cur = test; }
+    });
+    if(cur) lines.push(cur);
+    return lines;
+  }
+  function shBuildTargets(opts){
+    // One row (staggered vertically) so no target ever blocks the line of fire to another.
+    var n = opts.length, gap = 14;
+    var tw = Math.min(210, Math.floor((W - 40 - (n-1)*gap) / n));
+    cx.font = 'bold 13px "Courier New", monospace';
+    var letters = 'ABCDE', targets = [], maxLines = 1;
+    var order = shuffle(opts.map(function(_,i){ return i; }));
+    var rowW = n*tw + (n-1)*gap;
+    order.forEach(function(oi, idx){
+      var o = opts[oi];
+      var lines = wrapLines(letters[idx] + ': ' + (o.s || o.label), tw - 14);
+      maxLines = Math.max(maxLines, lines.length);
+      targets.push({k:o.k, letter:letters[idx], label:o.label, lines:lines,
+        rx:(W - rowW)/2 + idx*(tw+gap), ry:(idx % 2) * 34, w:tw, state:'live'});
+    });
+    var th = Math.max(54, maxLines*15 + 22);
+    targets.forEach(function(g){ g.h = th; });
+    return targets;
+  }
+  function shLayout(){ // current formation offset
+    var t = (performance.now() - SH.t0)/1000;
+    var minX = Infinity, maxX = -Infinity, maxY = 0;
+    SH.targets.forEach(function(g){ minX = Math.min(minX, g.rx); maxX = Math.max(maxX, g.rx + g.w); maxY = Math.max(maxY, g.ry + g.h); });
+    var amp = Math.max(0, (W - (maxX - minX))/2 - 8);
+    var freq = SH.theme.sway / paceMult();
+    var ox = SH.resolved ? SH.frozenOx : Math.sin(t * freq) * amp;
+    var top = SH.theme.boss ? 78 : 14;
+    var oy = top + timerFrac() * (GROUND - 10 - maxY - top);
+    if(SH.resolved) oy = SH.frozenOy;
+    return {ox:ox, oy:oy};
+  }
+  function shNextStep(){
+    var steps;
+    SH.si++;
+    if(SH.si >= shSteps(state.level, SH.items[SH.ci]).length){ SH.si = 0; SH.ci++; }
+    if(SH.ci >= SH.items.length){ finishLevel(state.level); return; }
+    steps = shSteps(state.level, SH.items[SH.ci]);
+    SH.step = steps[SH.si];
+    var item = SH.items[SH.ci];
+    $('shoot-progress').textContent = (state.level === 6 ? 'QUESTION ' : 'CASE ') + (SH.ci+1) + '/' + SH.items.length;
+    $('shoot-step').textContent = steps.length > 1 ? ('WAVE ' + (SH.si+1) + '/' + steps.length) : '';
+    $('shoot-text').innerHTML = item.text;
+    $('shoot-q').textContent = SH.step.q;
+    SH.targets = shBuildTargets(SH.step.opts);
+    var leg = $('shoot-legend'); leg.innerHTML = '';
+    SH.targets.forEach(function(g){
+      var li = document.createElement('li'); li.setAttribute('data-k', g.k);
+      li.innerHTML = '<b>' + g.letter + '</b> · ' + esc(g.label);
+      leg.appendChild(li);
+    });
+    SH.bullet = null; SH.fx = []; SH.autoFire = null; SH.chosen = null; SH.resolved = false; SH.t0 = performance.now();
+    $('shoot-why').className = 'why-box'; $('shoot-why').innerHTML = '';
+    $('shoot-next-row').style.display = 'none';
+    $('shoot-skip').disabled = false;
+    $('shoot-streak').textContent = streakText();
+    $('shoot-progress').scrollIntoView({behavior:'smooth', block:'start'});
+    startTimer(LV[state.level].sec * 1000, null, function(){ shResolve(null); });
+  }
+  function shFire(){
+    if(SH.resolved || SH.bullet || anyOverlayOpen()) return;
+    SH.bullet = {x:SH.ship.x, y:GROUND - 18};
+    sfxLaser();
+  }
+  function shAimAt(k){
+    if(SH.resolved) return;
+    var L = shLayout();
+    SH.targets.forEach(function(g){ if(g.k === k){ SH.ship.tx = L.ox + g.rx + g.w/2; SH.autoFire = k; } });
+  }
+  function explode(x, y, color){
+    for(var i=0;i<26;i++){ var a = Math.random()*Math.PI*2, sp = Math.random()*4+1;
+      SH.fx.push({x:x, y:y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, life:40, c:color}); }
+  }
+  window.shResolve = function(k){
+    if(SH.resolved) return;
+    var L = shLayout();
+    SH.frozenOx = L.ox; SH.frozenOy = L.oy;
+    SH.resolved = true; stopTimer();
+    var skipped = k === '__skip', correct = !skipped && k === SH.step.ans;
+    var pts = recordResult(correct, skipped);
+    var ansLabel = '';
+    SH.targets.forEach(function(g){
+      if(g.k === SH.step.ans){ g.state = 'correct'; ansLabel = g.letter + ': ' + g.label; if(correct) explode(L.ox+g.rx+g.w/2, L.oy+g.ry+g.h/2, '#39ff88'); }
+      else if(g.k === k){ g.state = 'wrong'; explode(L.ox+g.rx+g.w/2, L.oy+g.ry+g.h/2, '#ff4b5c'); }
+      else { g.state = 'dead'; }
+    });
+    if(k === null){ explode(SH.ship.x, GROUND, '#ff4b5c'); }
+    if(!correct && !skipped) sfxBoom();
+    var lis = $('shoot-legend').querySelectorAll('li');
+    for(var i=0;i<lis.length;i++){
+      var lk = lis[i].getAttribute('data-k');
+      if(lk === SH.step.ans) lis[i].classList.add('correct'); else if(lk === k) lis[i].classList.add('incorrect');
+    }
+    if(SH.theme.boss && (correct || skipped)){
+      SH.bossHits++;
+      $('boss-hp-fill').style.width = Math.max(0, 100 - SH.bossHits/SH.items.length*100) + '%';
+    }
+    $('shoot-skip').disabled = true;
+    var w = $('shoot-why');
+    w.className = 'why-box ' + ((correct || skipped) ? 'ok' : 'bad');
+    w.innerHTML = verdictHtml(correct, skipped, k === null, pts, ansLabel, SH.step.why);
+    var steps = shSteps(state.level, SH.items[SH.ci]);
+    var lastStep = SH.si >= steps.length - 1, lastCard = SH.ci >= SH.items.length - 1;
+    $('shoot-next').textContent = state.pendingGameOver ? 'GAME OVER ▶' :
+      (!lastStep ? 'NEXT WAVE ▶' : (lastCard ? (state.level === 6 ? 'SEE RESULTS ▶' : 'FINISH LEVEL ▶') : (state.level === 6 ? 'NEXT QUESTION ▶' : 'NEXT CASE ▶')));
+    $('shoot-next-row').style.display = 'block';
+    $('shoot-streak').textContent = streakText();
+    w.scrollIntoView({behavior:'smooth', block:'nearest'});
+  };
+  window.shNext = function(){
+    sfxClick();
+    if(state.pendingGameOver){ triggerGameOver(); return; }
+    shNextStep();
+  };
+  function rr(x,y,w,h,r){ cx.beginPath(); cx.moveTo(x+r,y); cx.arcTo(x+w,y,x+w,y+h,r); cx.arcTo(x+w,y+h,x,y+h,r); cx.arcTo(x,y+h,x,y,r); cx.arcTo(x,y,x+w,y,r); cx.closePath(); }
+  function drawTarget(g, x, y){
+    var col = g.state === 'correct' ? '#39ff88' : (g.state === 'wrong' ? '#ff4b5c' : SH.theme.color);
+    if(g.state === 'dead'){ cx.globalAlpha = 0.25; }
+    var shape = SH.theme.shape;
+    cx.lineWidth = 3; cx.strokeStyle = col; cx.fillStyle = '#120d1a';
+    if(shape === 'link'){ rr(x, y, g.w, g.h, 32); cx.fill(); cx.stroke(); cx.lineWidth = 1; rr(x+6, y+6, g.w-12, g.h-12, 26); cx.stroke(); }
+    else if(shape === 'flame'){
+      rr(x, y, g.w, g.h, 10); cx.fill(); cx.stroke();
+      cx.fillStyle = col; for(var f=0; f<5; f++){ var fx = x + 12 + f*(g.w-24)/4; cx.beginPath(); cx.moveTo(fx-6, y); cx.lineTo(fx, y-12 - (f%2)*5); cx.lineTo(fx+6, y); cx.fill(); }
+    } else {
+      rr(x, y, g.w, g.h, 6); cx.fill(); cx.stroke();
+      cx.fillStyle = col; cx.fillRect(x+10, y-8, 6, 8); cx.fillRect(x+g.w-16, y-8, 6, 8); cx.fillRect(x+4, y+g.h, 8, 6); cx.fillRect(x+g.w-12, y+g.h, 8, 6);
+    }
+    cx.fillStyle = g.state === 'dead' ? '#888' : '#ffffff';
+    cx.font = 'bold 13px "Courier New", monospace'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    var lh = 15, startY = y + g.h/2 - (g.lines.length-1)*lh/2;
+    g.lines.forEach(function(l, i){ cx.fillText(l, x + g.w/2, startY + i*lh); });
+    cx.globalAlpha = 1;
+  }
+  function drawBoss(){
+    var bx = W/2, by = 34, t = performance.now()/300;
+    cx.fillStyle = '#ff4b5c'; rr(bx-110, by-18, 220, 36, 18); cx.fill();
+    cx.fillStyle = '#ff9a3b'; rr(bx-60, by-30, 120, 20, 10); cx.fill();
+    for(var i=0;i<7;i++){ cx.fillStyle = (Math.floor(t)+i)%2 ? '#ffd93b' : '#4bf3ff'; cx.beginPath(); cx.arc(bx-90+i*30, by+4, 5, 0, Math.PI*2); cx.fill(); }
+    cx.fillStyle = '#1a0010'; cx.font = 'bold 11px "Courier New", monospace'; cx.textAlign = 'center'; cx.fillText('LEGAL CAUSE', bx, by-19);
+  }
+  function shLoop(lid){
+    if(!SH.running || lid !== SH.loopId) return;
+    if(activeScreen() !== 'screen-shoot'){ SH.running = false; return; }
+    var paused = anyOverlayOpen();
+    cx.fillStyle = '#04030a'; cx.fillRect(0,0,W,H);
+    SH.stars.forEach(function(s){ if(!paused){ s.y += s.v; if(s.y > H) s.y = 0; } cx.fillStyle = 'rgba(255,255,255,' + (0.3+s.s/3) + ')'; cx.fillRect(s.x, s.y, s.s, s.s); });
+    // ground
+    cx.fillStyle = '#ffd93b'; for(var gx=0; gx<W; gx+=24){ cx.fillRect(gx, GROUND+30, 12, 4); }
+    if(SH.theme && SH.theme.boss){ drawBoss(); }
+    var L = shLayout();
+    SH.targets.forEach(function(g){ drawTarget(g, L.ox + g.rx, L.oy + g.ry); });
+    // ship movement
+    if(!paused && !SH.resolved){
+      if(SH.keys.left){ SH.ship.x -= 7; SH.ship.tx = null; SH.autoFire = null; }
+      if(SH.keys.right){ SH.ship.x += 7; SH.ship.tx = null; SH.autoFire = null; }
+      if(SH.ship.tx !== null){
+        var d = SH.ship.tx - SH.ship.x;
+        SH.ship.x += Math.max(-12, Math.min(12, d));
+        if(Math.abs(d) < 3 && SH.autoFire){ SH.autoFire = null; SH.ship.tx = null; shFire(); }
+      }
+      SH.ship.x = Math.max(20, Math.min(W-20, SH.ship.x));
+    }
+    // ship
+    var sx = SH.ship.x, sy = GROUND + 6;
+    cx.fillStyle = '#4bf3ff';
+    cx.beginPath(); cx.moveTo(sx, sy-22); cx.lineTo(sx+18, sy+10); cx.lineTo(sx-18, sy+10); cx.closePath(); cx.fill();
+    cx.fillStyle = '#ffd93b'; cx.fillRect(sx-3, sy-28, 6, 10);
+    // bullet
+    if(SH.bullet && !paused){
+      SH.bullet.y -= 11;
+      if(!SH.resolved){
+        for(var i=0;i<SH.targets.length;i++){
+          var g = SH.targets[i], gx2 = L.ox + g.rx, gy2 = L.oy + g.ry;
+          if(SH.bullet.x >= gx2 && SH.bullet.x <= gx2 + g.w && SH.bullet.y <= gy2 + g.h && SH.bullet.y >= gy2 - 4){ var hitK = g.k; SH.bullet = null; shResolve(hitK); break; }
+        }
+      }
+      if(SH.bullet && SH.bullet.y < -10) SH.bullet = null;
+    }
+    if(SH.bullet){ cx.fillStyle = '#ffd93b'; cx.fillRect(SH.bullet.x-2, SH.bullet.y-12, 4, 12); }
+    // fx
+    SH.fx = SH.fx.filter(function(p){ if(!paused){ p.x += p.vx; p.y += p.vy; p.vy += 0.08; p.life--; } cx.globalAlpha = Math.max(0, p.life/40); cx.fillStyle = p.c; cx.fillRect(p.x, p.y, 3, 3); cx.globalAlpha = 1; return p.life > 0; });
+    requestAnimationFrame(function(){ shLoop(lid); });
+  }
+  function canvasXY(e){ var r = cv.getBoundingClientRect(); return {x:(e.clientX - r.left) * W / r.width, y:(e.clientY - r.top) * H / r.height}; }
+  cv.addEventListener('mousemove', function(e){ if(SH.resolved || SH.autoFire) return; SH.ship.tx = canvasXY(e).x; });
+  cv.addEventListener('click', function(e){
+    if(SH.resolved) return;
+    var p = canvasXY(e), L = shLayout(), hit = null;
+    SH.targets.forEach(function(g){ var gx = L.ox+g.rx, gy = L.oy+g.ry; if(p.x >= gx && p.x <= gx+g.w && p.y >= gy-10 && p.y <= gy+g.h+10) hit = g.k; });
+    if(hit){ shAimAt(hit); } else { SH.ship.tx = p.x; SH.autoFire = '__any'; }
+  });
+  // '__any' fires once the ship arrives at a clicked empty spot
+  $('shoot-legend').addEventListener('click', function(e){
+    var li = e.target.closest('li'); if(li && !SH.resolved){ shAimAt(li.getAttribute('data-k')); }
+  });
+
+  // =========================================================
+  // LEVEL 5: LADDER
+  // =========================================================
+  var LD = { items:[], ci:0, pos:4, resolved:true };
+  function ladderStart(){
+    LD.items = shuffle(LADDER_DATA); LD.ci = -1;
+    var lad = $('ladder');
+    Array.prototype.slice.call(lad.querySelectorAll('.rung')).forEach(function(r){ r.remove(); });
+    GRADE_OPTS.forEach(function(o, i){
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'rung'; b.setAttribute('data-k', o.k); b.setAttribute('data-i', i);
+      b.innerHTML = '<span class="rk">' + (5-i) + '</span>' + o.label;
+      b.onclick = function(){ if(LD.resolved) return; LD.pos = i; ladderPlace(); sfxStep(); setTimeout(ladderLock, 180); };
+      lad.appendChild(b);
+    });
+    showScreen('screen-ladder');
+    ladderNext();
+  }
+  function ladderPlace(){
+    var rungs = $('ladder').querySelectorAll('.rung');
+    for(var i=0;i<rungs.length;i++){ rungs[i].classList.toggle('here', i === LD.pos && !LD.resolved); }
+    var r = rungs[LD.pos];
+    if(r){ $('climber').style.top = (r.offsetTop + r.offsetHeight/2 - 15) + 'px'; }
+  }
+  window.ladderNext = function(){
+    sfxClick();
+    if(state.pendingGameOver){ triggerGameOver(); return; }
+    LD.ci++;
+    if(LD.ci >= LD.items.length){ finishLevel(3); return; }
+    var item = LD.items[LD.ci];
+    $('ladder-progress').textContent = 'CASE ' + (LD.ci+1) + '/' + LD.items.length;
+    $('ladder-text').innerHTML = item.text;
+    var rungs = $('ladder').querySelectorAll('.rung');
+    for(var i=0;i<rungs.length;i++){ rungs[i].disabled = false; rungs[i].classList.remove('correct','incorrect'); }
+    LD.pos = 4; LD.resolved = false; ladderPlace();
+    $('ladder-lock').disabled = false; $('ladder-skip').disabled = false;
+    $('ladder-why').className = 'why-box'; $('ladder-why').innerHTML = '';
+    $('ladder-next-row').style.display = 'none';
+    $('ladder-streak').textContent = streakText();
+    $('ladder-progress').scrollIntoView({behavior:'smooth', block:'start'});
+    startTimer(LV[3].sec * 1000, null, function(){ ladderResolve(null); });
+  };
+  function ladderMove(d){ if(LD.resolved) return; LD.pos = Math.max(0, Math.min(4, LD.pos + d)); sfxStep(); ladderPlace(); }
+  window.ladderLock = function(){ if(LD.resolved) return; ladderResolve(GRADE_OPTS[LD.pos].k); };
+  window.ladderResolve = function(k){
+    if(LD.resolved) return;
+    LD.resolved = true; stopTimer();
+    var item = LD.items[LD.ci];
+    var skipped = k === '__skip', correct = !skipped && k === item.ans;
+    var pts = recordResult(correct, skipped);
+    if(!correct && !skipped) sfxBoom();
+    var ansLabel = '';
+    var rungs = $('ladder').querySelectorAll('.rung');
+    for(var i=0;i<rungs.length;i++){
+      var rk = rungs[i].getAttribute('data-k'); rungs[i].disabled = true; rungs[i].classList.remove('here');
+      if(rk === item.ans){ rungs[i].classList.add('correct'); } else if(rk === k){ rungs[i].classList.add('incorrect'); }
+    }
+    GRADE_OPTS.forEach(function(o){ if(o.k === item.ans) ansLabel = o.label; });
+    $('ladder-lock').disabled = true; $('ladder-skip').disabled = true;
+    var w = $('ladder-why');
+    w.className = 'why-box ' + ((correct || skipped) ? 'ok' : 'bad');
+    w.innerHTML = verdictHtml(correct, skipped, k === null, pts, ansLabel, item.why);
+    var last = LD.ci >= LD.items.length - 1;
+    $('ladder-next').textContent = state.pendingGameOver ? 'GAME OVER ▶' : (last ? 'FINISH LEVEL ▶' : 'NEXT CASE ▶');
+    $('ladder-next-row').style.display = 'block';
+    $('ladder-streak').textContent = streakText();
+    w.scrollIntoView({behavior:'smooth', block:'nearest'});
+  };
+
+  // ---------- Keyboard ----------
+  document.addEventListener('keydown', function(e){
+    if(e.target && e.target.tagName === 'INPUT') return;
+    if(anyOverlayOpen()) return;
+    var scr = activeScreen(), key = e.key;
+    if(scr === 'screen-fall' && !l1Resolved){
+      if(key === 'ArrowLeft'){ e.preventDefault(); l1Move('left'); }
+      else if(key === 'ArrowRight'){ e.preventDefault(); l1Move('right'); }
+      else if(key === 'ArrowDown' || key === ' '){ e.preventDefault(); l1Slam(null); }
+    } else if(scr === 'screen-shoot' && !SH.resolved){
+      if(key === 'ArrowLeft'){ e.preventDefault(); SH.keys.left = true; }
+      else if(key === 'ArrowRight'){ e.preventDefault(); SH.keys.right = true; }
+      else if(key === ' '){ e.preventDefault(); shFire(); }
+      else if(/^[a-eA-E]$/.test(key)){
+        var g = SH.targets.filter(function(t){ return t.letter === key.toUpperCase(); })[0];
+        if(g){ e.preventDefault(); shAimAt(g.k); }
+      }
+    } else if(scr === 'screen-ladder' && !LD.resolved){
+      if(key === 'ArrowUp'){ e.preventDefault(); ladderMove(-1); }
+      else if(key === 'ArrowDown'){ e.preventDefault(); ladderMove(1); }
+      else if(key === ' ' || key === 'Enter'){ e.preventDefault(); ladderLock(); }
+    }
+  });
+  document.addEventListener('keyup', function(e){
+    if(e.key === 'ArrowLeft') SH.keys.left = false;
+    if(e.key === 'ArrowRight') SH.keys.right = false;
+  });
+  // auto-fire after a click on empty space
+  setInterval(function(){
+    if(SH.autoFire === '__any' && SH.ship.tx !== null && Math.abs(SH.ship.tx - SH.ship.x) < 3){ SH.autoFire = null; SH.ship.tx = null; shFire(); }
+  }, 30);
+
+  // ---------- Level complete / end ----------
+  function finishLevel(n){
+    stopAll();
+    var st = state.stats[n];
+    $('done-title').textContent = (n === 6 ? 'MOTHERSHIP DESTROYED' : 'LEVEL ' + n + ' CLEAR: ' + LV[n].name.toUpperCase());
+    var flawless = st.answered > 0 && state.levelMistakes === 0;
+    $('done-score').innerHTML = st.correct + ' / ' + st.total + ' CORRECT<br>SCORE ' + fmt(state.score) + (flawless ? '<br><span style="color:var(--green)">FLAWLESS LEVEL!</span>' : '');
+    $('done-recap').innerHTML = '<p>' + esc(LV[n].recap) + '</p><p class="small"><b>Key terms:</b> ' + esc(LV[n].terms) + '</p>';
+    $('done-next').textContent = n === 6 ? 'SEE FINAL RESULTS ▶' : 'CONTINUE TO ' + (n === 5 ? 'THE BOSS' : 'LEVEL ' + (n+1)) + ' ▶';
+    showScreen('screen-done');
+    playVictoryJingle();
+    if(flawless){ setTimeout(function(){ grantLife('FLAWLESS'); }, 900); }
+  }
+  window.afterDone = function(){ sfxClick(); if(state.level >= 6){ showEnd(); } else { startLevel(state.level + 1); } };
+  function levelTitle(n){ return LV[n].label.replace('the Boss Round','Boss Round'); }
+  function recapHtml(){
+    var h = '';
+    for(var n=1;n<=6;n++){ h += '<p class="recap-item"><b>' + esc(levelTitle(n)) + ':</b> ' + esc(LV[n].recap) + '</p>'; }
+    return h;
+  }
+  function totals(){ var c = 0, t = 0; for(var n=1;n<=6;n++){ t += levelItemCount(n); if(state.stats[n]) c += state.stats[n].correct; } return {c:c, t:t}; }
+  function showEnd(){
+    state.finished = true; stopAll();
+    var tc = totals();
+    $('end-score').innerHTML = 'FINAL SCORE ' + fmt(state.score) + '<br>' + tc.c + ' / ' + tc.t + ' CORRECT · BEST STREAK ' + state.bestStreak;
+    $('end-ranks').innerHTML = renderRankTable(state.score);
+    $('end-recap').innerHTML = recapHtml();
+    $('end-status').textContent = '';
+    showScreen('screen-end');
+    playVictoryJingle();
+  }
+  function triggerGameOver(){
+    stopAll(); playGameOverJingle();
+    $('gameover-level').textContent = 'You ran out of lives during ' + (LV[state.level] ? LV[state.level].label : 'the game') + '.';
+    $('gameover-score').innerHTML = 'FINAL SCORE ' + fmt(state.score);
+    $('gameover-ranks').innerHTML = renderRankTable(state.score);
+    $('go-status').textContent = '';
+    showScreen('screen-gameover');
+  }
+  window.playAgain = function(){ sfxClick(); stopAll(); state = freshState(); if(teacher) state.teacherUsed = true; updateHud(); showScreen('screen-title'); };
+
+  // ---------- Teacher mode (in-page dialog; no browser prompt) ----------
+  function renderTeacherOverlay(){
+    $('teacher-locked').style.display = teacher ? 'none' : 'block';
+    $('teacher-unlocked').style.display = teacher ? 'block' : 'none';
+  }
+  window.openTeacher = function(){
+    sfxClick(); renderTeacherOverlay(); $('teacher-err').textContent = ''; $('teacher-pw').value = '';
+    $('teacher-overlay').classList.add('show');
+    if(!teacher) setTimeout(function(){ $('teacher-pw').focus(); }, 50);
+  };
+  window.closeTeacher = function(){ sfxClick(); $('teacher-overlay').classList.remove('show'); };
+  window.submitTeacher = function(e){
+    e.preventDefault();
+    if($('teacher-pw').value === TEACHER_PASSWORD){
+      teacher = true; state.teacherUsed = true; document.body.classList.add('teacher');
+      $('hud-teacher-btn').textContent = '🔑 TEACHER: ON';
+      playExtraLifeJingle(); renderTeacherOverlay();
+    } else { sfxWrong(); $('teacher-err').textContent = 'Incorrect password.'; }
+  };
+  window.teacherOff = function(){
+    teacher = false; document.body.classList.remove('teacher');
+    $('hud-teacher-btn').textContent = '🔑 TEACHER';
+    renderTeacherOverlay(); closeTeacher();
+  };
+  window.jumpToLevel = function(n){
+    if(!teacher) return;
+    $('teacher-overlay').classList.remove('show');
+    stopAll(); state.pendingGameOver = false;
+    if(state.lives <= 0){ state.lives = START_LIVES; }
+    startLevel(n);
+  };
+
+  // ---------- Completion report ----------
+  function buildReportHtml(name){
+    var tc = totals(), r = rankFor(state.score);
+    var date = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+    var title = GAME_SHORT + ' - Report - ' + name;
+    var status = state.finished ? 'Completed all levels' : ('Game over during ' + (LV[state.level] ? LV[state.level].label : 'the game'));
+    var rankRows = RANKS.map(function(x){
+      var a = x === r;
+      return '<tr' + (a ? ' class="mine"' : '') + '><td>' + (a ? '▶ ' : '') + esc(x.label) + '</td><td>' + rangeStr(x) + '</td><td>' + esc(x.meaning) + '</td></tr>';
+    }).join('');
+    var lvRows = '';
+    for(var n=1;n<=6;n++){
+      var st = state.stats[n];
+      var sc = st ? (st.correct + '/' + st.total + ' correct' + (st.skipped ? ' (' + st.skipped + ' skipped in teacher mode)' : '')) : 'Not reached';
+      lvRows += '<div class="qa-row"><h3>' + esc(levelTitle(n)) + ': ' + esc(sc) + '</h3><p>' + esc(LV[n].recap) + '</p><p><b>Key terms to review:</b> ' + esc(LV[n].terms) + '</p></div>';
+    }
+    return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>' + esc(title) + '</title><style>' +
+      '@page{margin:0.7in;} body{font-family:Georgia,"Times New Roman",serif; color:#000; background:#fff; max-width:760px; margin:24px auto; padding:0 18px; line-height:1.45; font-size:12pt;}' +
+      'h1{font-size:20pt; margin:0 0 4px;} h2{font-size:14pt; margin:22px 0 8px; border-bottom:1px solid #999; padding-bottom:3px;} h3{font-size:12pt; margin:12px 0 4px;}' +
+      'table{border-collapse:collapse; width:100%; font-size:11pt;} td,th{border:1px solid #999; padding:5px 7px; vertical-align:top; text-align:left;} tr.mine td{background:#e8f5e8; font-weight:bold;}' +
+      '.meta td{border:none; padding:2px 10px 2px 0;} .note{font-size:10.5pt; color:#333;} .print-bar{background:#fff7cc; border:1px solid #d6b600; padding:10px 12px; margin-bottom:18px; font-family:Arial,sans-serif; font-size:11pt;}' +
+      '.print-bar button{margin-left:10px; padding:6px 12px; font-size:11pt; cursor:pointer;} @media print{ .print-bar{display:none;} .qa-row, tr{break-inside:avoid;} }' +
+      '</style></head><body>' +
+      '<div class="print-bar">To submit, save this page as a PDF: click the button and choose “Save as PDF” as the destination. <button onclick="window.print()">Print / Save as PDF</button></div>' +
+      '<h1>' + esc(GAME_TITLE) + ': Completion Report</h1>' +
+      '<p class="note">Criminal Law · Prof. Cheryl Wattley</p>' +
+      '<table class="meta"><tr><td><b>Student:</b></td><td>' + esc(name) + '</td></tr><tr><td><b>Date:</b></td><td>' + esc(date) + '</td></tr>' +
+      '<tr><td><b>Status:</b></td><td>' + esc(status) + '</td></tr><tr><td><b>Correct answers:</b></td><td>' + tc.c + '/' + tc.t + '</td></tr>' +
+      '<tr><td><b>Final score:</b></td><td>' + fmt(state.score) + ' pts</td></tr><tr><td><b>Rank achieved:</b></td><td>' + esc(r.label) + '</td></tr>' +
+      '<tr><td><b>Best streak:</b></td><td>' + state.bestStreak + ' in a row</td></tr><tr><td><b>Reading speed at finish:</b></td><td>' + esc(PACE_LABELS[PACE_MODE]) + '</td></tr></table>' +
+      (state.teacherUsed ? '<p class="note"><b>Note:</b> Teacher mode was used during this run (lives were not lost and some answers may have been revealed).</p>' : '') +
+      '<p class="note">Scoring: each correct answer earns 100 points (150 in the Boss Round) plus up to 50 speed points; extra lives earned with a full bank of 6 convert to 250 points. Wrong answers and timeouts cost a life, not points.</p>' +
+      '<h2>Rank Table</h2><table><tr><th>Rank</th><th>Points needed</th><th>Meaning</th></tr>' + rankRows + '</table>' +
+      '<h2>Concept Summary by Level</h2><p class="note">This is a study recap of the concepts each level covered, not a question-by-question answer key.</p>' + lvRows +
+      '</body></html>';
+  }
+  function reportName(which){
+    var inp = $(which === 'end' ? 'end-name' : 'go-name');
+    var name = inp.value.trim();
+    if(!name){ $(which === 'end' ? 'end-status' : 'go-status').textContent = 'Please enter your name first.'; sfxWrong(); inp.focus(); return null; }
+    return name;
+  }
+  function safeFile(s){ return s.replace(/[\\\/:*?"<>|]/g, '').trim(); }
+  function openPdfReport(html){
+    var w = null;
+    try{ w = window.open('', '_blank'); }catch(e){ w = null; }
+    if(w && w.document){
+      w.document.open(); w.document.write(html); w.document.close();
+      var fire = function(){ try{ w.focus(); w.print(); }catch(e){} };
+      if(w.document.readyState === 'complete'){ setTimeout(fire, 300); }
+      else { w.addEventListener('load', function(){ setTimeout(fire, 300); }); }
+    } else {
+      var fr = document.createElement('iframe');
+      fr.style.cssText = 'position:fixed; right:0; bottom:0; width:0; height:0; border:0;';
+      document.body.appendChild(fr);
+      fr.onload = function(){ setTimeout(function(){ try{ fr.contentWindow.focus(); fr.contentWindow.print(); }catch(e){} setTimeout(function(){ fr.remove(); }, 60000); }, 300); };
+      fr.srcdoc = html;
+    }
+  }
+  // Downloads: inside a published claude.ai artifact, files go through the page's downloads capability;
+  // in a plain browser tab, through an ordinary <a download>.
+  var DL = null;
+  try{ if(window.claude && typeof window.claude.use === 'function'){ window.claude.use('downloads').then(function(d){ DL = d; }, function(){ DL = null; }); } }catch(e){}
+  function statusEl(which){ return $(which === 'end' ? 'end-status' : 'go-status'); }
+  function deliverFile(which, filename, data, okMsg){
+    if(DL){
+      DL.save({filename:filename, data:data}).then(function(){ statusEl(which).textContent = okMsg; },
+        function(err){ statusEl(which).textContent = (err && err.code === 'declined') ? 'Save canceled.' : 'Saving isn’t available in this view. Open the game in its own browser tab and try again.'; });
+      return;
+    }
+    var blob = (data instanceof Blob) ? data : new Blob([data], {type:'text/html'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    statusEl(which).textContent = okMsg;
+  }
+  function pdfSafe(t){
+    return String(t).replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[–—]/g,'-')
+      .replace(/▶/g,'>').replace(/→/g,'->').replace(/·/g,'-').replace(/[^\x00-\xff]/g,'');
+  }
+  function buildReportPdf(name){
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({unit:'pt', format:'letter'});
+    var M = 54, PW = 612 - 2*M, y = M, PH = 792;
+    doc.setProperties({title: pdfSafe(GAME_SHORT + ' - Report - ' + name)});
+    function need(h){ if(y + h > PH - M){ doc.addPage(); y = M; } }
+    function para(text, size, style, gapAfter, indent){
+      doc.setFont('times', style || 'normal'); doc.setFontSize(size);
+      var lines = doc.splitTextToSize(pdfSafe(text), PW - (indent||0));
+      var lh = size * 1.3;
+      lines.forEach(function(l){ need(lh); doc.text(l, M + (indent||0), y + size); y += lh; });
+      y += (gapAfter === undefined ? 6 : gapAfter);
+    }
+    function blockHeight(parts){ var h = 0; parts.forEach(function(p){ doc.setFont('times', p[2]||'normal'); doc.setFontSize(p[1]); h += doc.splitTextToSize(pdfSafe(p[0]), PW - (p[4]||0)).length * p[1]*1.3 + (p[3]===undefined?6:p[3]); }); return h; }
+    function block(parts){ need(blockHeight(parts)); parts.forEach(function(p){ para(p[0], p[1], p[2], p[3], p[4]); }); }
+    function rule(){ need(10); doc.setDrawColor(150); doc.line(M, y, M+PW, y); y += 10; }
+    var tc = totals(), r = rankFor(state.score);
+    var date = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+    var status = state.finished ? 'Completed all levels' : ('Game over during ' + (LV[state.level] ? LV[state.level].label : 'the game'));
+    para(GAME_TITLE + ': Completion Report', 18, 'bold', 2);
+    para('Criminal Law - Prof. Cheryl Wattley', 10, 'italic', 12);
+    [['Student', name], ['Date', date], ['Status', status], ['Correct answers', tc.c + '/' + tc.t], ['Final score', fmt(state.score) + ' pts'],
+     ['Rank achieved', r.label], ['Best streak', state.bestStreak + ' in a row'], ['Reading speed at finish', PACE_LABELS[PACE_MODE]]].forEach(function(row){
+      need(16); doc.setFontSize(11.5); doc.setFont('times','bold'); doc.text(pdfSafe(row[0] + ':'), M, y + 11.5);
+      doc.setFont('times','normal'); doc.text(pdfSafe(row[1]), M + 160, y + 11.5); y += 16;
+    });
+    y += 6;
+    if(state.teacherUsed){ para('Note: Teacher mode was used during this run (lives were not lost and some answers may have been revealed).', 10, 'bold', 6); }
+    para('Scoring: each correct answer earns 100 points (150 in the Boss Round) plus up to 50 speed points; extra lives earned with a full bank of 6 convert to 250 points. Wrong answers and timeouts cost a life, not points.', 10, 'normal', 12);
+    para('Rank Table', 14, 'bold', 2); rule();
+    RANKS.forEach(function(x){
+      var mine = x === r;
+      block([[(mine ? '> YOUR RANK: ' : '') + x.label + '   (' + rangeStr(x) + ')', 11.5, 'bold', 1], [x.meaning, 10.5, mine ? 'bold' : 'normal', 8, 14]]);
+    });
+    y += 6;
+    para('Concept Summary by Level', 14, 'bold', 2); rule();
+    para('This is a study recap of the concepts each level covered, not a question-by-question answer key.', 10, 'italic', 8);
+    for(var n=1;n<=6;n++){
+      var st = state.stats[n];
+      var sc = st ? (st.correct + '/' + st.total + ' correct' + (st.skipped ? ' (' + st.skipped + ' skipped in teacher mode)' : '')) : 'Not reached';
+      block([[levelTitle(n) + ': ' + sc, 12, 'bold', 2], [LV[n].recap, 11, 'normal', 3], ['Key terms to review: ' + LV[n].terms, 11, 'italic', 10]]);
+    }
+    return doc.output('blob');
+  }
+  window.saveReportPdf = function(which){
+    var name = reportName(which); if(!name) return;
+    sfxClick();
+    var fname = safeFile(GAME_SHORT + ' - Report - ' + name) + '.pdf';
+    if(window.jspdf && window.jspdf.jsPDF){
+      try{
+        statusEl(which).textContent = 'Preparing your PDF…';
+        deliverFile(which, fname, buildReportPdf(name), 'Saved “' + fname + '”. Submit that PDF.');
+        return;
+      }catch(e){ /* fall through to the print route */ }
+    }
+    openPdfReport(buildReportHtml(name));
+    statusEl(which).textContent = 'In the print window, choose “Save as PDF” (or “Microsoft Print to PDF”) as the destination, then click Save.';
+  };
+  window.downloadReport = function(which){
+    var name = reportName(which); if(!name) return;
+    sfxClick();
+    deliverFile(which, safeFile(GAME_SHORT + ' - Report - ' + name) + '.html', buildReportHtml(name),
+      'Report downloaded. Open it and use its Print / Save as PDF button to make the PDF.');
+  };
+
+  setPace('standard', true);
+  updateHud(); updateGateLabels();
+})();
+</script>
+</body>
+</html>
